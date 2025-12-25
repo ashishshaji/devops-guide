@@ -200,40 +200,101 @@
             </div>
         </section>
 
-        <!-- SECTION 3: KOPS ARCHITECTURE -->
-        <section class="bg-slate-900 rounded-3xl p-8 text-white">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <!-- SECTION 3: PROVISIONING TOOLS (KOPS & KUBESPRAY) -->
+        <section class="bg-white rounded-3xl p-10 border border-slate-200 shadow-xl">
+            <div class="mb-10 text-center md:text-left">
+                <h2 class="text-3xl font-bold text-slate-800">Cluster Provisioning Tools</h2>
+                <p class="text-slate-500 mt-2">Tools for building "Self-Managed" clusters on cloud or bare metal.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <!-- KOPS Deep Dive -->
                 <div class="space-y-6">
-                    <div class="inline-block bg-accent/20 text-accent px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest border border-accent/30">Infrastructure as Code</div>
-                    <h2 class="text-4xl font-bold">Kubernetes Operations (KOPS)</h2>
-                    <p class="text-slate-400 text-lg leading-relaxed">
-                        KOPS is the "Swiss Army Knife" for AWS clusters. It doesn't just install K8s; it builds the VPC, subnets, and Route53 records automatically.
+                    <div class="flex items-center gap-4">
+                        <div class="h-14 w-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg">
+                            <i class="fas fa-hammer"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-slate-800">KOPS (K8s Operations)</h3>
+                            <span class="text-xs font-bold text-blue-600 uppercase tracking-widest">AWS Specialist</span>
+                        </div>
+                    </div>
+                    
+                    <p class="text-slate-600 leading-relaxed">
+                        KOPS is essentially <strong>Infrastructure as Code</strong>. It is the most robust way to manage the entire lifecycle of a production cluster on AWS, handling everything from VPC creation to Route 53 setup.
                     </p>
-                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
-                        <h4 class="text-accent font-bold mb-4 flex items-center gap-2"><i class="fas fa-clipboard-list"></i> AWS Prerequisites</h4>
-                        <ul class="text-sm space-y-3">
-                            <li class="flex items-center gap-3"><i class="fas fa-check-circle text-emerald-500"></i> IAM User with Admin Permissions</li>
-                            <li class="flex items-center gap-3"><i class="fas fa-check-circle text-emerald-500"></i> S3 Bucket (to store Cluster State)</li>
-                            <li class="flex items-center gap-3"><i class="fas fa-check-circle text-emerald-500"></i> Route 53 Domain (Public or .local)</li>
+
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+                        <h4 class="font-bold text-slate-700 flex items-center gap-2"><i class="fas fa-check-circle text-blue-500"></i> Key Enterprise Benefits</h4>
+                        <ul class="text-sm space-y-3 text-slate-600">
+                            <li><strong><i class="fas fa-folder-open mr-2 text-slate-400"></i> Lifecycle Management:</strong> Handles creation, upgrades (rolling updates), and deletion with a single command.</li>
+                            <li><strong><i class="fas fa-database mr-2 text-slate-400"></i> State Store:</strong> Uses S3 to store the cluster's "source of truth," allowing multiple admins to manage the same cluster.</li>
+                            <li><strong><i class="fas fa-shield-alt mr-2 text-slate-400"></i> High Availability:</strong> Automatically builds HA Master nodes across multiple Availability Zones.</li>
                         </ul>
                     </div>
+
+                    <div class="cmd-block">
+                        <div class="text-[10px] text-slate-500 mb-1 uppercase font-bold tracking-widest">Quick Start CLI</div>
+                        <span class="text-blue-400">kops</span> create cluster <span class="text-emerald-400">--name</span>=prod.k8s.io <span class="text-emerald-400">--state</span>=s3://state-bucket
+                    </div>
                 </div>
-                <div class="space-y-4">
-                    <div class="text-xs text-slate-500 uppercase font-bold mb-2 tracking-widest">Cluster Creation Workflow</div>
-                    <div class="cmd-block">
-                        <span class="text-slate-500"># 1. Store state in S3</span><br>
-                        export KOPS_STATE_STORE=s3://my-k8s-state
+
+                <!-- KUBESPRAY Deep Dive -->
+                <div class="space-y-6">
+                    <div class="flex items-center gap-4">
+                        <div class="h-14 w-14 bg-slate-800 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-slate-800">Kubespray</h3>
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Multi-Cloud & Bare Metal</span>
+                        </div>
                     </div>
-                    <div class="cmd-block">
-                        <span class="text-slate-500"># 2. Generate configuration</span><br>
-                        kops create cluster --name=prod.k8s.io --zones=us-east-1a
+
+                    <p class="text-slate-600 leading-relaxed">
+                        Kubespray uses <strong>Ansible Playbooks</strong> to deploy Kubernetes. It is the go-to tool for installing K8s on physical servers (Bare Metal) or virtual machines where cloud-native tools don't apply.
+                    </p>
+
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+                        <h4 class="font-bold text-slate-700 flex items-center gap-2"><i class="fas fa-cog text-slate-500"></i> Versatile Provisioning</h4>
+                        <ul class="text-sm space-y-3 text-slate-600">
+                            <li><strong><i class="fas fa-linux mr-2 text-slate-400"></i> Multi-OS Support:</strong> Works across Ubuntu, CentOS, Debian, and RHEL via standard SSH.</li>
+                            <li><strong><i class="fas fa-network-wired mr-2 text-slate-400"></i> Network Flexibility:</strong> Choice of CNI plugins (Calico, Flannel, Canal, Weave) baked into the playbooks.</li>
+                            <li><strong><i class="fas fa-sync mr-2 text-slate-400"></i> Idempotent:</strong> You can re-run playbooks to fix configuration drift without destroying the cluster.</li>
+                        </ul>
                     </div>
-                    <div class="cmd-block">
-                        <span class="text-slate-500"># 3. Build resources (Charges apply!)</span><br>
-                        kops update cluster --name prod.k8s.io --yes --admin
+
+                    <div class="bg-orange-50 border border-orange-200 p-4 rounded-xl">
+                        <div class="flex gap-3">
+                            <i class="fas fa-lightbulb text-orange-500 mt-1"></i>
+                            <p class="text-xs text-orange-800 leading-relaxed">
+                                <strong>Decision Tip:</strong> Use <strong>KOPS</strong> if you are 100% AWS and want cloud-native automation. Use <strong>Kubespray</strong> if you have a mix of providers or manage your own physical data center.
+                            </p>
+                        </div>
                     </div>
-                    <div class="p-4 bg-orange-500/10 border border-orange-500/30 rounded-lg text-orange-200 text-xs">
-                        <i class="fas fa-exclamation-triangle mr-2"></i> <strong>WARNING:</strong> This will incur AWS costs for EC2, EBS, and Route53.
+                </div>
+            </div>
+        </section>
+
+        <!-- KOPS PREREQUISITES -->
+        <section class="max-w-3xl mx-auto">
+            <div class="bg-blue-900 text-white rounded-3xl p-8 shadow-lg">
+                <h3 class="text-xl font-bold mb-6 flex items-center gap-2"><i class="fas fa-list-ul"></i> KOPS AWS Prerequisites</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white/10 p-4 rounded-xl border border-white/10">
+                        <div class="text-blue-300 mb-2"><i class="fas fa-terminal"></i></div>
+                        <p class="font-bold text-sm">AWS CLI & IAM</p>
+                        <p class="text-[10px] opacity-70">Administrator permissions configured locally.</p>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-xl border border-white/10">
+                        <div class="text-blue-300 mb-2"><i class="fas fa-box"></i></div>
+                        <p class="font-bold text-sm">S3 State Bucket</p>
+                        <p class="text-[10px] opacity-70">Stores cluster manifest and SSH keys.</p>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-xl border border-white/10">
+                        <div class="text-blue-300 mb-2"><i class="fas fa-globe"></i></div>
+                        <p class="font-bold text-sm">Route 53 Domain</p>
+                        <p class="text-[10px] opacity-70">Real domain or <code>.k8s.local</code> discovery.</p>
                     </div>
                 </div>
             </div>
@@ -268,8 +329,8 @@
     </div>
 
     <footer class="bg-slate-800 text-slate-400 py-12 text-center">
-        <p class="text-sm mb-2">K8s Deployment Series</p>
-        <p class="text-xs">Learning Local, Scaling Global</p>
+        <p class="text-sm mb-2 text-slate-200 font-bold">K8s Deployment Series</p>
+        <p class="text-xs">Learning Local, Scaling Global • © 2025</p>
     </footer>
 
     <script>
