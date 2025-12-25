@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kubernetes Lifecycle: From KOPS to Pods</title>
+    <title>K8s: Dev vs Production Environments</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
             --primary: #326CE5;
-            --secondary: #39A0F4;
-            --accent: #FFEB3B;
-            --dark: #1e293b;
+            --secondary: #00A3E0;
+            --accent: #FF9900;
+            --dark: #0f172a;
             --light: #f8fafc;
         }
 
@@ -27,16 +28,25 @@
             border-bottom: 1px solid rgba(226, 232, 240, 0.8);
         }
 
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+        }
+
         .interactive-block {
             cursor: pointer;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .interactive-block:hover {
             transform: translateY(-3px);
+            filter: brightness(0.95);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
-        /* Modal Animation - Matching your Architecture page */
         #componentModal {
             transition: opacity 0.3s ease;
             display: none;
@@ -53,28 +63,13 @@
             transform: scale(1);
         }
 
-        .code-block {
-            background-color: #0f172a;
+        .cmd-block {
+            background: #1e293b;
             color: #e2e8f0;
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-            position: relative;
             font-family: 'Fira Code', monospace;
-            font-size: 0.875rem;
-            line-height: 1.6;
-        }
-
-        .copy-btn {
-            position: absolute;
-            top: 0.75rem;
-            right: 0.75rem;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            text-transform: uppercase;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--accent);
         }
 
         ::-webkit-scrollbar { width: 8px; }
@@ -85,240 +80,274 @@
 <body class="bg-slate-50 text-slate-800 antialiased">
 
     <!-- NAVIGATION -->
-    <nav class="glass-nav sticky top-0 z-50 py-4 px-6 mb-0">
+    <nav class="glass-nav sticky top-0 z-50 py-4 px-6">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <a href="#" class="flex items-center gap-2 group">
                 <div class="bg-blue-600 p-2 rounded-lg text-white group-hover:bg-slate-900 transition-colors">
-                    <i class="fas fa-dharmachakra"></i>
+                    <i class="fas fa-arrow-left"></i>
                 </div>
                 <div class="flex flex-col">
-                    <span class="text-[10px] font-bold text-blue-600 uppercase tracking-tighter leading-none">DevOps Series</span>
-                    <span class="text-sm font-bold text-slate-900 leading-tight">Lifecycle Guide</span>
+                    <span class="text-[10px] font-bold text-blue-600 uppercase tracking-tighter leading-none">Back to</span>
+                    <span class="text-sm font-bold text-slate-900 leading-tight">Mastering K8s</span>
                 </div>
             </a>
-            
-            <div class="flex items-center gap-6 text-sm font-bold text-slate-600">
-                <a href="#kops" class="hover:text-blue-600 hidden md:block">Production Clusters</a>
-                <a href="#pods" class="hover:text-blue-600 hidden md:block">Pod Internals</a>
-                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Cheatsheet</button>
+            <div class="flex items-center gap-3">
+                <div class="hidden md:block text-right">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Deployment Strategy</p>
+                    <p class="text-xs font-bold text-slate-700">Dev vs Production</p>
+                </div>
+                <div class="h-8 w-px bg-slate-200 mx-2"></div>
+                <i class="fas fa-cloud text-blue-500"></i>
             </div>
         </div>
     </nav>
 
     <!-- HERO SECTION -->
-    <header class="bg-gradient-to-r from-blue-700 to-cyan-500 text-white p-16 text-center shadow-lg mb-12">
-        <h1 class="text-5xl font-bold mb-4">Kubernetes Operations</h1>
-        <p class="text-xl opacity-90 max-w-2xl mx-auto">Mastering cluster management and application deployment workflows.</p>
+    <header class="bg-gradient-to-r from-slate-900 to-blue-800 text-white p-12 text-center shadow-lg mb-12">
+        <h1 class="text-5xl font-bold mb-4">Kubernetes Ecosystem</h1>
+        <p class="text-xl opacity-90 max-w-3xl mx-auto">From learning on your laptop to scaling enterprise workloads in the cloud.</p>
         <div class="mt-8 flex justify-center gap-4 flex-wrap">
-            <span class="bg-white/20 px-4 py-2 rounded-full backdrop-blur-sm"><i class="fas fa-server mr-2"></i>KOPS</span>
-            <span class="bg-white/20 px-4 py-2 rounded-full backdrop-blur-sm"><i class="fas fa-cube mr-2"></i>Minikube</span>
-            <span class="bg-white/20 px-4 py-2 rounded-full backdrop-blur-sm"><i class="fas fa-terminal mr-2"></i>Kubectl</span>
+            <span class="bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm border border-white/20"><i class="fas fa-laptop-code mr-2"></i>Development</span>
+            <span class="bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm border border-white/20"><i class="fas fa-rocket mr-2"></i>Production</span>
+            <span class="bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm border border-white/20"><i class="fas fa-shield-alt mr-2"></i>Managed Services</span>
         </div>
     </header>
 
-    <main class="container mx-auto px-4 max-w-6xl space-y-24 pb-20">
+    <main class="container mx-auto px-4 max-w-6xl space-y-20 pb-20">
 
-        <!-- KOPS SECTION -->
-        <section id="kops" class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+        <!-- SECTION 1: DEV VS PROD -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div class="space-y-6">
                 <div class="border-l-4 border-blue-600 pl-4">
-                    <h2 class="text-3xl font-bold text-slate-800 uppercase tracking-tight">Production Management</h2>
-                    <p class="text-slate-500 font-medium italic">Kubernetes Operations (KOPS)</p>
+                    <h2 class="text-3xl font-bold text-slate-800">Environment Selection</h2>
+                    <p class="text-slate-500 font-medium">The Right Tool for the Job</p>
                 </div>
-                <p class="text-lg leading-relaxed text-slate-600">
-                    While Minikube is for local development, <strong>KOPS</strong> is the enterprise standard for managing production-ready clusters on AWS. It automates provisioning, scaling, and updates.
+                <p class="text-lg text-slate-600 leading-relaxed">
+                    Not all clusters are created equal. For learning and local testing, you need <strong>agility</strong>. For customer-facing apps, you need <strong>reliability</strong>.
                 </p>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div onclick="showDetails('s3')" class="interactive-block bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                        <i class="fas fa-hdd text-blue-600 mb-3 text-xl"></i>
-                        <h4 class="font-bold text-slate-800">State Storage</h4>
-                        <p class="text-xs text-slate-500">Uses S3 buckets as the cluster's source of truth.</p>
+                <div class="space-y-4">
+                    <div onclick="showDetails('dev')" class="interactive-block bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                        <div class="bg-emerald-100 text-emerald-600 p-3 rounded-lg"><i class="fas fa-vial"></i></div>
+                        <div>
+                            <h4 class="font-bold">Development (Minikube/k3s)</h4>
+                            <p class="text-xs text-slate-500">Lightweight, single-node, free of cost.</p>
+                        </div>
                     </div>
-                    <div onclick="showDetails('iam')" class="interactive-block bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                        <i class="fas fa-user-shield text-blue-600 mb-3 text-xl"></i>
-                        <h4 class="font-bold text-slate-800">IAM Control</h4>
-                        <p class="text-xs text-slate-500">Granular AWS permissions for node security.</p>
+                    <div onclick="showDetails('prod')" class="interactive-block bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                        <div class="bg-blue-100 text-blue-600 p-3 rounded-lg"><i class="fas fa-server"></i></div>
+                        <div>
+                            <h4 class="font-bold">Production (EKS/AKS/GKE)</h4>
+                            <p class="text-xs text-slate-500">High availability, managed control plane, 24/7 support.</p>
+                        </div>
                     </div>
                 </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-100">
+                <h3 class="text-center font-bold text-slate-700 mb-4">Cost vs Complexity Radar</h3>
+                <div class="chart-container">
+                    <canvas id="envRadarChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: DISTRIBUTIONS EXPLORER -->
+        <section>
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">Kubernetes Distributions</h2>
+                <p class="text-slate-600 max-w-2xl mx-auto">A "distribution" is vanilla K8s wrapped in enterprise features, UI, and support.</p>
             </div>
             
-            <div class="bg-slate-900 rounded-2xl overflow-hidden shadow-2xl">
-                <div class="bg-slate-800 px-6 py-3 border-b border-slate-700 flex justify-between items-center">
-                    <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">provisioning.sh</span>
-                    <div class="flex gap-1.5">
-                        <div class="w-2.5 h-2.5 rounded-full bg-slate-600"></div>
-                        <div class="w-2.5 h-2.5 rounded-full bg-slate-600"></div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Managed Cloud -->
+                <div onclick="showDetails('managed')" class="interactive-block bg-white rounded-2xl p-6 shadow-md border-t-4 border-orange-500">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="font-bold text-xl">Managed Cloud</h4>
+                        <i class="fas fa-cloud-upload-alt text-orange-500"></i>
+                    </div>
+                    <p class="text-sm text-slate-500 mb-4">The provider manages the Master Node. You only pay for workers.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold">AWS EKS</span>
+                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold">Azure AKS</span>
+                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold">Google GKE</span>
                     </div>
                 </div>
-                <div class="code-block">
-                    <button class="copy-btn" onclick="copyCode('kopsCode')">Copy</button>
-                    <pre id="kopsCode"># Export state store location
-export KOPS_STATE_STORE=s3://my-k8s-bucket
-
-# Create cluster configuration
-kops create cluster --name=pro-cluster.k8s.local \
-  --zones=us-east-1a --node-count=3 --node-size=t3.medium
-
-# Apply and build infrastructure
-kops update cluster pro-cluster.k8s.local --yes</pre>
+                <!-- Enterprise Wrapper -->
+                <div onclick="showDetails('enterprise')" class="interactive-block bg-white rounded-2xl p-6 shadow-md border-t-4 border-red-600">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="font-bold text-xl">Enterprise Tooling</h4>
+                        <i class="fas fa-building text-red-600"></i>
+                    </div>
+                    <p class="text-sm text-slate-500 mb-4">Platform-as-a-Service layers with built-in CI/CD and security.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold">OpenShift</span>
+                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold">Rancher</span>
+                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold">VMware Tanzu</span>
+                    </div>
+                </div>
+                <!-- Local Tools -->
+                <div onclick="showDetails('local')" class="interactive-block bg-white rounded-2xl p-6 shadow-md border-t-4 border-emerald-500">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="font-bold text-xl">Local/Edge</h4>
+                        <i class="fas fa-microchip text-emerald-500"></i>
+                    </div>
+                    <p class="text-sm text-slate-500 mb-4">Perfect for offline learning and IoT devices.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold">Minikube</span>
+                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold">k3s</span>
+                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold">Kind</span>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- POD SECTION -->
-        <section id="pods">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl font-bold text-slate-800">The Smallest Unit: Pods</h2>
-                <p class="text-slate-600">The fundamental building block of Kubernetes execution.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-white p-8 rounded-2xl shadow-lg border-t-4 border-cyan-500 text-center">
-                    <div class="w-16 h-16 bg-cyan-50 text-cyan-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">
-                        <i class="fas fa-layer-group"></i>
+        <!-- SECTION 3: KOPS ARCHITECTURE -->
+        <section class="bg-slate-900 rounded-3xl p-8 text-white">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <div class="inline-block bg-accent/20 text-accent px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest border border-accent/30">Infrastructure as Code</div>
+                    <h2 class="text-4xl font-bold">Kubernetes Operations (KOPS)</h2>
+                    <p class="text-slate-400 text-lg leading-relaxed">
+                        KOPS is the "Swiss Army Knife" for AWS clusters. It doesn't just install K8s; it builds the VPC, subnets, and Route53 records automatically.
+                    </p>
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                        <h4 class="text-accent font-bold mb-4 flex items-center gap-2"><i class="fas fa-clipboard-list"></i> AWS Prerequisites</h4>
+                        <ul class="text-sm space-y-3">
+                            <li class="flex items-center gap-3"><i class="fas fa-check-circle text-emerald-500"></i> IAM User with Admin Permissions</li>
+                            <li class="flex items-center gap-3"><i class="fas fa-check-circle text-emerald-500"></i> S3 Bucket (to store Cluster State)</li>
+                            <li class="flex items-center gap-3"><i class="fas fa-check-circle text-emerald-500"></i> Route 53 Domain (Public or .local)</li>
+                        </ul>
                     </div>
-                    <h3 class="font-bold text-xl mb-3">Isolation</h3>
-                    <p class="text-slate-500 text-sm">Each Pod gets its own IP address and network namespace, isolating it from others.</p>
-                </div>
-                <div class="bg-white p-8 rounded-2xl shadow-lg border-t-4 border-blue-600 text-center">
-                    <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">
-                        <i class="fas fa-link"></i>
-                    </div>
-                    <h3 class="font-bold text-xl mb-3">Shared Resources</h3>
-                    <p class="text-slate-500 text-sm">Multiple containers in a Pod share the same storage volumes and localhost.</p>
-                </div>
-                <div class="bg-white p-8 rounded-2xl shadow-lg border-t-4 border-indigo-600 text-center">
-                    <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">
-                        <i class="fas fa-heartbeat"></i>
-                    </div>
-                    <h3 class="font-bold text-xl mb-3">Ephemeral</h3>
-                    <p class="text-slate-500 text-sm">Pods are not permanent. If they fail, Kubernetes replaces them with new ones.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- CHEATSHEET SECTION -->
-        <section class="bg-white p-12 rounded-3xl border border-slate-200 shadow-xl">
-            <h2 class="text-2xl font-bold text-slate-800 mb-8 border-b pb-4">Essential Developer Cheatsheet</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="space-y-4">
-                    <h4 class="text-xs font-bold text-blue-600 uppercase tracking-widest">Inspection</h4>
-                    <ul class="space-y-2 font-mono text-sm text-slate-600">
-                        <li class="bg-slate-50 p-2 rounded">kubectl get pods</li>
-                        <li class="bg-slate-50 p-2 rounded">kubectl describe pod [name]</li>
-                    </ul>
                 </div>
                 <div class="space-y-4">
-                    <h4 class="text-xs font-bold text-green-600 uppercase tracking-widest">Deployment</h4>
-                    <ul class="space-y-2 font-mono text-sm text-slate-600">
-                        <li class="bg-slate-50 p-2 rounded">kubectl apply -f app.yaml</li>
-                        <li class="bg-slate-50 p-2 rounded">kubectl delete -f app.yaml</li>
-                    </ul>
-                </div>
-                <div class="space-y-4">
-                    <h4 class="text-xs font-bold text-amber-600 uppercase tracking-widest">Debugging</h4>
-                    <ul class="space-y-2 font-mono text-sm text-slate-600">
-                        <li class="bg-slate-50 p-2 rounded">kubectl logs [pod-name]</li>
-                        <li class="bg-slate-50 p-2 rounded">kubectl exec -it [pod] -- sh</li>
-                    </ul>
+                    <div class="text-xs text-slate-500 uppercase font-bold mb-2 tracking-widest">Cluster Creation Workflow</div>
+                    <div class="cmd-block">
+                        <span class="text-slate-500"># 1. Store state in S3</span><br>
+                        export KOPS_STATE_STORE=s3://my-k8s-state
+                    </div>
+                    <div class="cmd-block">
+                        <span class="text-slate-500"># 2. Generate configuration</span><br>
+                        kops create cluster --name=prod.k8s.io --zones=us-east-1a
+                    </div>
+                    <div class="cmd-block">
+                        <span class="text-slate-500"># 3. Build resources (Charges apply!)</span><br>
+                        kops update cluster --name prod.k8s.io --yes --admin
+                    </div>
+                    <div class="p-4 bg-orange-500/10 border border-orange-500/30 rounded-lg text-orange-200 text-xs">
+                        <i class="fas fa-exclamation-triangle mr-2"></i> <strong>WARNING:</strong> This will incur AWS costs for EC2, EBS, and Route53.
+                    </div>
                 </div>
             </div>
         </section>
+
     </main>
 
-    <!-- COMPONENT MODAL POPUP (Aligned with your existing logic) -->
-    <div id="componentModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] items-center justify-center p-4">
+    <!-- COMPONENT MODAL -->
+    <div id="componentModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] items-center justify-center p-4">
         <div class="modal-content bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden relative">
-            <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-xl transition-colors">
-                <i class="fas fa-times"></i>
-            </button>
-            <div id="modalHeader" class="p-8 text-white bg-blue-600 transition-colors duration-300">
-                <div class="text-[10px] font-bold uppercase tracking-[0.2em] opacity-80 mb-1">Ops Highlight</div>
-                <h3 id="modalTitle" class="text-3xl font-bold">Concept Name</h3>
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-xl"><i class="fas fa-times"></i></button>
+            <div id="modalHeader" class="p-8 text-white transition-colors duration-300">
+                <div class="text-[10px] font-bold uppercase tracking-[0.2em] opacity-80 mb-1">Ecosystem Insights</div>
+                <h3 id="modalTitle" class="text-3xl font-bold">Name</h3>
             </div>
             <div class="p-8 space-y-6">
                 <div>
                     <div class="flex items-center gap-2 text-blue-600 font-bold uppercase tracking-widest text-[10px] mb-2">
-                        <i class="fas fa-info-circle"></i> Operational Context
+                        <i class="fas fa-info-circle"></i> Best Use Case
                     </div>
                     <p id="modalDescription" class="text-slate-600 leading-relaxed"></p>
                 </div>
-                <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase mb-3 tracking-wider">Key Takeaways</p>
-                    <ul id="modalList" class="text-sm text-slate-700 space-y-2"></ul>
+                <div id="modalAlert" class="hidden p-4 bg-red-50 border border-red-100 rounded-lg text-red-700 text-xs flex items-start gap-3">
+                    <i class="fas fa-exclamation-circle mt-0.5"></i>
+                    <span><strong>Cost Alert:</strong> This path involves recurring cloud provider charges.</span>
                 </div>
             </div>
-            <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
-                <button onclick="closeModal()" class="px-8 py-2.5 bg-slate-800 text-white rounded-xl font-bold text-sm hover:bg-slate-900 transition-all shadow-lg">Close Guide</button>
+            <div class="p-4 bg-slate-50 border-t flex justify-end">
+                <button onclick="closeModal()" class="px-8 py-2.5 bg-slate-800 text-white rounded-xl font-bold text-sm">Close Guide</button>
             </div>
         </div>
     </div>
 
-    <footer class="bg-slate-800 text-slate-300 py-12 text-center">
-        <p class="mb-2">DevOps Lifecycle Series</p>
-        <p class="text-xs text-slate-500">Aligning Infrastructure with Application Needs</p>
+    <footer class="bg-slate-800 text-slate-400 py-12 text-center">
+        <p class="text-sm mb-2">K8s Deployment Series</p>
+        <p class="text-xs">Learning Local, Scaling Global</p>
     </footer>
 
     <script>
-        const componentData = {
-            s3: {
-                title: 'S3 State Storage',
-                color: 'bg-blue-600',
-                desc: 'In KOPS, the "State Store" is the brain of your infrastructure setup. It saves cluster configurations so multiple admins can manage the same cluster.',
-                tasks: ['Configuration backup', 'Version control of infra', 'Shared team access']
+        const ecosystemData = {
+            dev: {
+                title: 'Development Clusters',
+                color: 'bg-emerald-600',
+                desc: 'Perfect for local development. Tools like Minikube and Kind run Kubernetes inside Docker or a small VM on your laptop. Essential for learning kubectl commands without cost.',
+                cost: false
             },
-            iam: {
-                title: 'IAM Permissions',
-                color: 'bg-indigo-600',
-                desc: 'Kubernetes needs specific AWS permissions to create LoadBalancers, manage EC2 nodes, and access storage volumes automatically.',
-                tasks: ['EC2FullAccess for nodes', 'S3FullAccess for state', 'VPCFullAccess for networking']
+            prod: {
+                title: 'Production Clusters',
+                color: 'bg-blue-600',
+                desc: 'Highly Available (HA) environments with multiple Master nodes spread across zones. These clusters handle patching, security auditing, and persistent storage at scale.',
+                cost: true
+            },
+            managed: {
+                title: 'Managed Services (CSP)',
+                color: 'bg-orange-500',
+                desc: 'EKS, AKS, and GKE remove the "Master Node Headache." The cloud provider manages API Server and etcd health. You only worry about the Worker nodes.',
+                cost: true
+            },
+            enterprise: {
+                title: 'Enterprise K8s',
+                color: 'bg-red-600',
+                desc: 'OpenShift or Rancher. These add a rich GUI, internal image registries, and sophisticated RBAC layers on top of standard Kubernetes.',
+                cost: true
+            },
+            local: {
+                title: 'Lightweight K8s',
+                color: 'bg-emerald-500',
+                desc: 'k3s or MicroK8s. Stripped down versions of K8s that run on low-resource devices or CI/CD runners where speed is critical.',
+                cost: false
             }
         };
 
         function showDetails(key) {
-            const data = componentData[key];
+            const data = ecosystemData[key];
             const modal = document.getElementById('componentModal');
             document.getElementById('modalTitle').innerText = data.title;
             document.getElementById('modalDescription').innerText = data.desc;
-            document.getElementById('modalHeader').className = `p-8 text-white ${data.color} transition-colors duration-300`;
+            document.getElementById('modalHeader').className = `p-8 text-white ${data.color}`;
             
-            const list = document.getElementById('modalList');
-            list.innerHTML = '';
-            data.tasks.forEach(task => {
-                const li = document.createElement('li');
-                li.className = 'flex items-start gap-2';
-                li.innerHTML = `<i class="fas fa-check-circle text-blue-500 mt-1"></i> <span>${task}</span>`;
-                list.appendChild(li);
-            });
+            const alert = document.getElementById('modalAlert');
+            if(data.cost) alert.classList.remove('hidden');
+            else alert.classList.add('hidden');
 
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
 
         function closeModal() {
-            const modal = document.getElementById('componentModal');
-            modal.classList.remove('active');
+            document.getElementById('componentModal').classList.remove('active');
             document.body.style.overflow = 'auto';
         }
 
-        function copyCode(id) {
-            const text = document.getElementById(id).innerText;
-            const textarea = document.createElement("textarea");
-            textarea.value = text;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand("copy");
-            document.body.removeChild(textarea);
-            
-            const btn = event.target;
-            btn.innerText = "Copied!";
-            setTimeout(() => btn.innerText = "Copy", 2000);
-        }
-
-        window.onclick = (e) => {
-            if (e.target == document.getElementById('componentModal')) closeModal();
-        }
+        const ctxRadar = document.getElementById('envRadarChart').getContext('2d');
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: ['Scalability', 'Ease of Setup', 'Cost', 'Availability', 'Learning Curve'],
+                datasets: [
+                    {
+                        label: 'Managed (EKS)',
+                        data: [10, 8, 9, 10, 4],
+                        backgroundColor: 'rgba(50, 108, 229, 0.2)',
+                        borderColor: '#326CE5'
+                    },
+                    {
+                        label: 'Local (Minikube)',
+                        data: [2, 10, 1, 3, 9],
+                        backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                        borderColor: '#10b981'
+                    }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
     </script>
 </body>
 </html>
