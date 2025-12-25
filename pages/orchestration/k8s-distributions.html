@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K8s: Dev vs Production Environments</title>
+    <title>K8s: Distributions</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -89,6 +89,8 @@
             background: var(--primary);
             border-radius: 4px;
         }
+        .next-topic-banner { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); } 
+
     </style>
 </head>
 
@@ -97,7 +99,7 @@
     <!-- NAVIGATION -->
     <nav class="glass-nav sticky top-0 z-50 py-4 px-6">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <a href="#" class="flex items-center gap-2 group">
+            <a href="k8s-architecture.html" class="flex items-center gap-2 group">
                 <div class="bg-blue-600 p-2 rounded-lg text-white group-hover:bg-slate-900 transition-colors">
                     <i class="fas fa-arrow-left"></i>
                 </div>
@@ -120,8 +122,8 @@
 
     <!-- HERO SECTION -->
     <header class="bg-gradient-to-r from-slate-900 to-blue-800 text-white p-12 text-center shadow-lg mb-12">
-        <h1 class="text-5xl font-bold mb-4">Kubernetes Ecosystem</h1>
-        <p class="text-xl opacity-90 max-w-3xl mx-auto">From learning on your laptop to scaling enterprise workloads in
+        <h1 class="text-5xl font-bold mb-4">Kubernetes Distributions</h1>
+        <p class="text-xl opacity-90 max-w-3xl mx-auto">From your laptop to scaling enterprise workloads in
             the cloud.</p>
         <div class="mt-8 flex justify-center gap-4 flex-wrap">
             <span class="bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm border border-white/20"><i
@@ -416,6 +418,24 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
+        <section class="next-topic-banner rounded-3xl p-8 text-white relative overflow-hidden group">
+            <div class="absolute right-0 top-0 opacity-10 transform translate-x-10 -translate-y-10 group-hover:scale-110 transition-transform duration-500">
+                <i class="fas fa-layer-group text-[200px]"></i>
+            </div>
+            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="text-center md:text-left">
+                    <span class="text-[10px] font-black uppercase tracking-[0.3em] text-cyan-400 mb-2 block">Part 2 of the Series</span>
+                    <h3 class="text-2xl font-bold mb-2">Kubernetes Distributions</h3>
+                    <p class="text-slate-400 text-sm max-w-md italic">Comparing Cloud-managed (EKS/AKS), Enterprise (OpenShift), and Edge (k3s) environments.</p>
+                </div>
+                <a href="k8s-distributions.html"
+                    class="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-3 transition-all transform hover:translate-x-2">
+                    Next Chapter <i class="fas fa-arrow-right"></i>
+                </a>
+
+
             </div>
         </section>
     </main>
