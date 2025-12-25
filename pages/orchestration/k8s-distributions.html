@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K8s: Dev vs Production Environments</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #326CE5;
+            --secondary: #00A3E0;
+            --accent: #FF9900;
+            --dark: #0f172a;
+            --light: #f8fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+        }
+
+        .interactive-block {
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .interactive-block:hover {
+            transform: translateY(-3px);
+            filter: brightness(0.95);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        #componentModal {
+            transition: opacity 0.3s ease;
+            display: none;
+        }
+
+        .modal-content {
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        #componentModal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        #componentModal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .cmd-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            font-family: 'Fira Code', monospace;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+    <!-- NAVIGATION -->
+    <nav class="glass-nav sticky top-0 z-50 py-4 px-6">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="#" class="flex items-center gap-2 group">
+                <div class="bg-blue-600 p-2 rounded-lg text-white group-hover:bg-slate-900 transition-colors">
+                    <i class="fas fa-arrow-left"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-[10px] font-bold text-blue-600 uppercase tracking-tighter leading-none">Back
+                        to</span>
+                    <span class="text-sm font-bold text-slate-900 leading-tight">Mastering K8s</span>
+                </div>
+            </a>
+            <div class="flex items-center gap-3">
+                <div class="hidden md:block text-right">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Deployment Strategy</p>
+                    <p class="text-xs font-bold text-slate-700">Dev vs Production</p>
+                </div>
+                <div class="h-8 w-px bg-slate-200 mx-2"></div>
+                <i class="fas fa-cloud text-blue-500"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header class="bg-gradient-to-r from-slate-900 to-blue-800 text-white p-12 text-center shadow-lg mb-12">
+        <h1 class="text-5xl font-bold mb-4">Kubernetes Ecosystem</h1>
+        <p class="text-xl opacity-90 max-w-3xl mx-auto">From learning on your laptop to scaling enterprise workloads in
+            the cloud.</p>
+        <div class="mt-8 flex justify-center gap-4 flex-wrap">
+            <span class="bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm border border-white/20"><i
+                    class="fas fa-laptop-code mr-2"></i>Development</span>
+            <span class="bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm border border-white/20"><i
+                    class="fas fa-rocket mr-2"></i>Production</span>
+            <span class="bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm border border-white/20"><i
+                    class="fas fa-shield-alt mr-2"></i>Managed Services</span>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 max-w-6xl space-y-20 pb-20">
+
+        <!-- SECTION 1: DEV VS PROD -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+                <div class="border-l-4 border-blue-600 pl-4">
+                    <h2 class="text-3xl font-bold text-slate-800 tracking-tight">Environment Selection</h2>
+                    <p class="text-slate-500 font-medium">Choosing the Right Tool for the Mission</p>
+                </div>
+                <p class="text-slate-600 leading-relaxed">
+                    Efficiency starts with picking an environment that matches your scale. Dev environments prioritize
+                    local agility, while Production demands high availability and vendor support.
+                </p>
+                <div class="space-y-4">
+                    <div onclick="showDetails('dev')"
+                        class="interactive-block bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                        <div
+                            class="bg-emerald-100 text-emerald-600 h-12 w-12 flex items-center justify-center rounded-lg">
+                            <i class="fas fa-laptop-code"></i></div>
+                        <div>
+                            <h4 class="font-bold">Development & Learning</h4>
+                            <p class="text-xs text-slate-500">Local isolation, zero cost, rapid iteration.</p>
+                        </div>
+                    </div>
+                    <div onclick="showDetails('prod')"
+                        class="interactive-block bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                        <div class="bg-blue-100 text-blue-600 h-12 w-12 flex items-center justify-center rounded-lg"><i
+                                class="fas fa-server"></i></div>
+                        <div>
+                            <h4 class="font-bold">Production Readiness</h4>
+                            <p class="text-xs text-slate-500">Multi-zone availability, managed security, enterprise
+                                scale.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-xl border border-slate-100">
+                <h3 class="text-center font-bold text-slate-700 mb-4 text-sm uppercase tracking-widest">Environment
+                    Capability Radar</h3>
+                <div class="chart-container">
+                    <canvas id="envRadarChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+
+
+
+        <!-- SECTION 2: DISTRIBUTIONS EXPLORER -->
+        <section>
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">Kubernetes Distributions</h2>
+                <p class="text-slate-600 max-w-2xl mx-auto">A "distribution" is vanilla K8s wrapped in enterprise
+                    features, UI, and support.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Managed Cloud -->
+                <div onclick="showDetails('managed')"
+                    class="interactive-block bg-white rounded-2xl p-6 shadow-md border-t-4 border-orange-500">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="font-bold text-xl">Managed Cloud</h4>
+                        <i class="fas fa-cloud-upload-alt text-orange-500"></i>
+                    </div>
+                    <p class="text-sm text-slate-500 mb-4">The provider manages the Master Node. You only pay for
+                        workers.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold">AWS EKS</span>
+                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold">Azure AKS</span>
+                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold">Google GKE</span>
+                    </div>
+                </div>
+                <!-- Enterprise Wrapper -->
+                <div onclick="showDetails('enterprise')"
+                    class="interactive-block bg-white rounded-2xl p-6 shadow-md border-t-4 border-red-600">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="font-bold text-xl">Enterprise Tooling</h4>
+                        <i class="fas fa-building text-red-600"></i>
+                    </div>
+                    <p class="text-sm text-slate-500 mb-4">Platform-as-a-Service layers with built-in CI/CD and
+                        security.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold">OpenShift</span>
+                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold">Rancher</span>
+                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold">VMware Tanzu</span>
+                    </div>
+                </div>
+                <!-- Local Tools -->
+                <div onclick="showDetails('local')"
+                    class="interactive-block bg-white rounded-2xl p-6 shadow-md border-t-4 border-emerald-500">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="font-bold text-xl">Local/Edge</h4>
+                        <i class="fas fa-microchip text-emerald-500"></i>
+                    </div>
+                    <p class="text-sm text-slate-500 mb-4">Perfect for offline learning and IoT devices.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold">Minikube</span>
+                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold">k3s</span>
+                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold">Kind</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section>
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-black text-slate-800 mb-4 tracking-tight">The Great Debate</h2>
+                <p class="text-slate-500 max-w-2xl mx-auto font-medium">Provisioning Tools vs. Managed Services</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Managed Column -->
+                <div class="bg-white rounded-3xl p-8 shadow-sm border-2 border-slate-100 flex flex-col h-full">
+                    <div
+                        class="bg-blue-100 text-blue-700 w-max px-4 py-1 rounded-full text-[10px] font-black uppercase mb-4 tracking-widest">
+                        Managed (CSP)</div>
+                    <h3 class="text-2xl font-bold mb-4">GKE / EKS / AKS</h3>
+                    <p class="text-slate-500 text-sm mb-6">The Cloud Provider acts as your "Platform Team." They
+                        maintain the infrastructure underneath.</p>
+
+                    <ul class="space-y-4 flex-grow">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-check-circle text-emerald-500 mt-1"></i>
+                            <div>
+                                <span class="font-bold text-slate-700 block text-sm italic">Invisible Master
+                                    Nodes</span>
+                                <p class="text-xs text-slate-500">You don't manage the API server, etcd, or schedulers.
+                                    The provider handles their health and scaling.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-check-circle text-emerald-500 mt-1"></i>
+                            <div>
+                                <span class="font-bold text-slate-700 block text-sm italic">One-Click Upgrades</span>
+                                <p class="text-xs text-slate-500">Upgrade your entire cluster version via a button or
+                                    single CLI command with minimal risk.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="mt-8 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Verdict</p>
+                        <p class="text-sm font-medium text-slate-700">Best for 90% of companies wanting to focus on
+                            <strong>apps</strong> rather than <strong>infrastructure.</strong>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Provisioning Column -->
+                <div class="bg-slate-900 rounded-3xl p-8 shadow-xl text-white flex flex-col h-full">
+                    <div
+                        class="bg-white/10 text-white w-max px-4 py-1 rounded-full text-[10px] font-black uppercase mb-4 tracking-widest">
+                        Provisioning Tools</div>
+                    <h3 class="text-2xl font-bold mb-4">KOPS / Kubespray</h3>
+                    <p class="text-slate-400 text-sm mb-6">You are the "Platform Team." These tools help you build and
+                        automate your own custom-made cluster.</p>
+
+                    <ul class="space-y-4 flex-grow">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-cog text-blue-400 mt-1"></i>
+                            <div>
+                                <span class="font-bold text-slate-200 block text-sm italic">Total Master Node
+                                    Control</span>
+                                <p class="text-xs text-slate-400">You log into the Master nodes. You can customize the
+                                    API server flags and fine-tune etcd for performance.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-cog text-blue-400 mt-1"></i>
+                            <div>
+                                <span class="font-bold text-slate-200 block text-sm italic">Cloud Agnostic / Bare
+                                    Metal</span>
+                                <p class="text-xs text-slate-400">Build clusters on physical hardware in your own
+                                    basement or private data center where EKS doesn't exist.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="mt-8 p-4 bg-white/5 rounded-xl border border-white/10">
+                        <p class="text-[10px] font-bold text-slate-500 uppercase mb-2">Verdict</p>
+                        <p class="text-sm font-medium text-slate-200">Best for <strong>compliance-heavy
+                                industries</strong> or <strong>custom data centers</strong> where you need "full stack"
+                            visibility.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: PROVISIONING TOOLS (KOPS & KUBESPRAY) -->
+        <section class="bg-white rounded-3xl p-10 border border-slate-200 shadow-xl">
+            <div class="mb-10 text-center md:text-left">
+                <h2 class="text-3xl font-bold text-slate-800">Cluster Provisioning Tools</h2>
+                <p class="text-slate-500 mt-2">Tools for building "Self-Managed" clusters on cloud or bare metal.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <!-- KOPS Deep Dive -->
+                <div class="space-y-6">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="h-14 w-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg">
+                            <i class="fas fa-hammer"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-slate-800">KOPS (K8s Operations)</h3>
+                            <span class="text-xs font-bold text-blue-600 uppercase tracking-widest">AWS
+                                Specialist</span>
+                        </div>
+                    </div>
+
+                    <p class="text-slate-600 leading-relaxed">
+                        KOPS is essentially <strong>Infrastructure as Code</strong>. It is the most robust way to manage
+                        the entire lifecycle of a production cluster on AWS, handling everything from VPC creation to
+                        Route 53 setup.
+                    </p>
+
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+                        <h4 class="font-bold text-slate-700 flex items-center gap-2"><i
+                                class="fas fa-check-circle text-blue-500"></i> Key Enterprise Benefits</h4>
+                        <ul class="text-sm space-y-3 text-slate-600">
+                            <li><strong><i class="fas fa-folder-open mr-2 text-slate-400"></i> Lifecycle
+                                    Management:</strong> Handles creation, upgrades (rolling updates), and deletion with
+                                a single command.</li>
+                            <li><strong><i class="fas fa-database mr-2 text-slate-400"></i> State Store:</strong> Uses
+                                S3 to store the cluster's "source of truth," allowing multiple admins to manage the same
+                                cluster.</li>
+                            <li><strong><i class="fas fa-shield-alt mr-2 text-slate-400"></i> High
+                                    Availability:</strong> Automatically builds HA Master nodes across multiple
+                                Availability Zones.</li>
+                        </ul>
+                    </div>
+
+                    <div class="cmd-block">
+                        <div class="text-[10px] text-slate-500 mb-1 uppercase font-bold tracking-widest">Quick Start CLI
+                        </div>
+                        <span class="text-blue-400">kops</span> create cluster <span
+                            class="text-emerald-400">--name</span>=prod.k8s.io <span
+                            class="text-emerald-400">--state</span>=s3://state-bucket
+                    </div>
+                </div>
+
+                <!-- KUBESPRAY Deep Dive -->
+                <div class="space-y-6">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="h-14 w-14 bg-slate-800 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-slate-800">Kubespray</h3>
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Multi-Cloud & Bare
+                                Metal</span>
+                        </div>
+                    </div>
+
+                    <p class="text-slate-600 leading-relaxed">
+                        Kubespray uses <strong>Ansible Playbooks</strong> to deploy Kubernetes. It is the go-to tool for
+                        installing K8s on physical servers (Bare Metal) or virtual machines where cloud-native tools
+                        don't apply.
+                    </p>
+
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+                        <h4 class="font-bold text-slate-700 flex items-center gap-2"><i
+                                class="fas fa-cog text-slate-500"></i> Versatile Provisioning</h4>
+                        <ul class="text-sm space-y-3 text-slate-600">
+                            <li><strong><i class="fas fa-linux mr-2 text-slate-400"></i> Multi-OS Support:</strong>
+                                Works across Ubuntu, CentOS, Debian, and RHEL via standard SSH.</li>
+                            <li><strong><i class="fas fa-network-wired mr-2 text-slate-400"></i> Network
+                                    Flexibility:</strong> Choice of CNI plugins (Calico, Flannel, Canal, Weave) baked
+                                into the playbooks.</li>
+                            <li><strong><i class="fas fa-sync mr-2 text-slate-400"></i> Idempotent:</strong> You can
+                                re-run playbooks to fix configuration drift without destroying the cluster.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-orange-50 border border-orange-200 p-4 rounded-xl">
+                        <div class="flex gap-3">
+                            <i class="fas fa-lightbulb text-orange-500 mt-1"></i>
+                            <p class="text-xs text-orange-800 leading-relaxed">
+                                <strong>Decision Tip:</strong> Use <strong>KOPS</strong> if you are 100% AWS and want
+                                cloud-native automation. Use <strong>Kubespray</strong> if you have a mix of providers
+                                or manage your own physical data center.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- COMPONENT MODAL -->
+    <div id="componentModal"
+        class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] items-center justify-center p-4">
+        <div class="modal-content bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-xl"><i
+                    class="fas fa-times"></i></button>
+            <div id="modalHeader" class="p-8 text-white transition-colors duration-300">
+                <div class="text-[10px] font-bold uppercase tracking-[0.2em] opacity-80 mb-1">Ecosystem Insights</div>
+                <h3 id="modalTitle" class="text-3xl font-bold">Name</h3>
+            </div>
+            <div class="p-8 space-y-6">
+                <div>
+                    <div
+                        class="flex items-center gap-2 text-blue-600 font-bold uppercase tracking-widest text-[10px] mb-2">
+                        <i class="fas fa-info-circle"></i> Best Use Case
+                    </div>
+                    <p id="modalDescription" class="text-slate-600 leading-relaxed"></p>
+                </div>
+                <div id="modalAlert"
+                    class="hidden p-4 bg-red-50 border border-red-100 rounded-lg text-red-700 text-xs flex items-start gap-3">
+                    <i class="fas fa-exclamation-circle mt-0.5"></i>
+                    <span><strong>Cost Alert:</strong> This path involves recurring cloud provider charges.</span>
+                </div>
+            </div>
+            <div class="p-4 bg-slate-50 border-t flex justify-end">
+                <button onclick="closeModal()"
+                    class="px-8 py-2.5 bg-slate-800 text-white rounded-xl font-bold text-sm">Close Guide</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-slate-800 text-slate-400 py-12 text-center">
+        <p class="text-sm mb-2 text-slate-200 font-bold">K8s Deployment Series</p>
+        <p class="text-xs">Learning Local, Scaling Global • © 2025</p>
+    </footer>
+
+    <script>
+        const ecosystemData = {
+            dev: {
+                title: 'Development Clusters',
+                color: 'bg-emerald-600',
+                desc: 'Perfect for local development. Tools like Minikube and Kind run Kubernetes inside Docker or a small VM on your laptop. Essential for learning kubectl commands without cost.',
+                cost: false
+            },
+            prod: {
+                title: 'Production Clusters',
+                color: 'bg-blue-600',
+                desc: 'Highly Available (HA) environments with multiple Master nodes spread across zones. These clusters handle patching, security auditing, and persistent storage at scale.',
+                cost: true
+            },
+            managed: {
+                title: 'Managed Services (CSP)',
+                color: 'bg-orange-500',
+                desc: 'EKS, AKS, and GKE remove the "Master Node Headache." The cloud provider manages API Server and etcd health. You only worry about the Worker nodes.',
+                cost: true
+            },
+            enterprise: {
+                title: 'Enterprise K8s',
+                color: 'bg-red-600',
+                desc: 'OpenShift or Rancher. These add a rich GUI, internal image registries, and sophisticated RBAC layers on top of standard Kubernetes.',
+                cost: true
+            },
+            local: {
+                title: 'Lightweight K8s',
+                color: 'bg-emerald-500',
+                desc: 'k3s or MicroK8s. Stripped down versions of K8s that run on low-resource devices or CI/CD runners where speed is critical.',
+                cost: false
+            }
+        };
+
+        function showDetails(key) {
+            const data = ecosystemData[key];
+            const modal = document.getElementById('componentModal');
+            document.getElementById('modalTitle').innerText = data.title;
+            document.getElementById('modalDescription').innerText = data.desc;
+            document.getElementById('modalHeader').className = `p-8 text-white ${data.color}`;
+
+            const alert = document.getElementById('modalAlert');
+            if (data.cost) alert.classList.remove('hidden');
+            else alert.classList.add('hidden');
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('componentModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+                const ctxRadar = document.getElementById('envRadarChart').getContext('2d');
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: ['Uptime', 'Low Complexity', 'Cost Efficiency', 'Scalability', 'Control'],
+                datasets: [
+                    {
+                        label: 'Managed (EKS)',
+                        data: [10, 9, 7, 10, 4],
+                        backgroundColor: 'rgba(50, 108, 229, 0.2)',
+                        borderColor: '#326CE5',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#326CE5'
+                    },
+                    {
+                        label: 'Provisioned (KOPS)',
+                        data: [8, 4, 8, 9, 10],
+                        backgroundColor: 'rgba(255, 153, 0, 0.2)',
+                        borderColor: '#FF9900',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#FF9900'
+                    }
+                ]
+            },
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 10,
+                        ticks: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15, font: { size: 10 } } }
+                }
+            }
+                    });
+
+    </script>
+</body>
+
+</html>
