@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ansible Fundamentals | Interactive Learning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #326CE5;
+            --secondary: #00A3E0;
+            --accent: #FF9900;
+            --dark: #0f172a;
+            --light: #f8fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .interactive-block {
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .interactive-block:hover {
+            transform: translateY(-3px);
+            filter: brightness(0.95);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        #componentModal {
+            transition: opacity 0.3s ease;
+            display: none;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        #componentModal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        #componentModal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .cmd-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            font-family: 'Fira Code', monospace;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        
+        .next-topic-banner { 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
+        }
+
+        .step-pill {
+            @apply px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-4 inline-block;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- NAVIGATION -->
+    <nav class="glass-nav sticky top-0 z-50 py-4 px-6">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-[#EE0000] p-2 rounded text-white font-black text-xs">A</div>
+                <h1 class="font-bold text-slate-800 hidden sm:block">Ansible Fundamentals</h1>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="scrollToId('overview')" class="text-xs font-bold text-slate-500 hover:text-blue-600">Overview</button>
+                <button onclick="scrollToId('arch')" class="text-xs font-bold text-slate-500 hover:text-blue-600">Architecture</button>
+                <button onclick="scrollToId('setup')" class="text-xs font-bold text-slate-500 hover:text-blue-600">Setup</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header class="bg-slate-900 text-white py-16 px-6 text-center">
+        <div class="max-w-4xl mx-auto">
+            <span class="step-pill bg-blue-500/20 text-blue-400 border border-blue-500/30">Course Module 01</span>
+            <h1 class="text-4xl md:text-6xl font-black mb-6">Mastering Infrastructure Automation</h1>
+            <p class="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto">
+                A comprehensive guide learn to manage servers, deploy applications, and automate your blog rollout with Ansible.
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-12">
+        
+        <!-- SECTION 1: OVERVIEW -->
+        <section id="overview" class="mb-20">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="interactive-block bg-white p-8 rounded-3xl border border-slate-200" onclick="showModal('install')">
+                    <div class="text-blue-600 mb-4 text-2xl"><i class="fas fa-download"></i></div>
+                    <h3 class="font-black text-xl mb-2">Installation</h3>
+                    <p class="text-sm text-slate-500">Automating package installation across multiple remote servers simultaneously.</p>
+                </div>
+                <div class="interactive-block bg-white p-8 rounded-3xl border border-slate-200" onclick="showModal('config')">
+                    <div class="text-green-600 mb-4 text-2xl"><i class="fas fa-sliders-h"></i></div>
+                    <h3 class="font-black text-xl mb-2">Configuration</h3>
+                    <p class="text-sm text-slate-500">Updating, adding, or deleting server configurations with consistent state.</p>
+                </div>
+                <div class="interactive-block bg-white p-8 rounded-3xl border border-slate-200" onclick="showModal('deploy')">
+                    <div class="text-purple-600 mb-4 text-2xl"><i class="fas fa-rocket"></i></div>
+                    <h3 class="font-black text-xl mb-2">Deployment</h3>
+                    <p class="text-sm text-slate-500">Automating the full lifecycle of web applications from code to live production.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: COMPARISON -->
+        <section class="mb-20 bg-white rounded-3xl p-8 border border-slate-200 overflow-hidden">
+            <h2 class="text-2xl font-black mb-8 flex items-center gap-2">
+                <i class="fas fa-balance-scale text-blue-600"></i> Manual vs. Ansible Workflow
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-0 border rounded-2xl overflow-hidden">
+                <div class="p-6 bg-slate-50 border-b md:border-b-0 md:border-r">
+                    <h4 class="font-bold text-red-600 mb-4 tracking-tighter uppercase text-xs">Manual Method (Legacy)</h4>
+                    <ul class="space-y-4">
+                        <li class="flex gap-3 text-sm text-slate-600">
+                            <i class="fas fa-times-circle mt-1 text-red-400"></i>
+                            Individual SSH into every single server.
+                        </li>
+                        <li class="flex gap-3 text-sm text-slate-600">
+                            <i class="fas fa-times-circle mt-1 text-red-400"></i>
+                            Cryptic one-liner commands without context.
+                        </li>
+                        <li class="flex gap-3 text-sm text-slate-600">
+                            <i class="fas fa-times-circle mt-1 text-red-400"></i>
+                            Knowledge exists only in the developer's head.
+                        </li>
+                    </ul>
+                </div>
+                <div class="p-6 bg-blue-50/30">
+                    <h4 class="font-bold text-blue-600 mb-4 tracking-tighter uppercase text-xs">Ansible Method (Modern)</h4>
+                    <ul class="space-y-4">
+                        <li class="flex gap-3 text-sm text-slate-600">
+                            <i class="fas fa-check-circle mt-1 text-blue-500"></i>
+                            Logic written once in an Ansible Playbook.
+                        </li>
+                        <li class="flex gap-3 text-sm text-slate-600">
+                            <i class="fas fa-check-circle mt-1 text-blue-500"></i>
+                            Self-explanatory task names (e.g., "Install Python").
+                        </li>
+                        <li class="flex gap-3 text-sm text-slate-600">
+                            <i class="fas fa-check-circle mt-1 text-blue-500"></i>
+                            The Playbook serves as living documentation.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: ARCHITECTURE -->
+        <section id="arch" class="mb-20">
+            <div class="flex flex-col md:flex-row gap-12 items-center">
+                <div class="flex-1">
+                    <span class="step-pill bg-amber-500/10 text-amber-600 border border-amber-500/20">Agentless Design</span>
+                    <h2 class="text-4xl font-black mb-6">Ansible Architecture</h2>
+                    <p class="text-slate-600 mb-6 leading-relaxed">
+                        Ansible uses a <strong>Push Architecture</strong>. Unlike Chef or Puppet, you don't need to install any agent software on your remote servers.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="bg-white p-4 rounded-xl border border-slate-200 flex gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                                <i class="fas fa-laptop-code"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm">Control Node</h4>
+                                <p class="text-xs text-slate-500">Your laptop or jump server where Ansible is installed.</p>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border border-slate-200 flex gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-green-100 text-green-600 flex items-center justify-center shrink-0">
+                                <i class="fas fa-server"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm">Managed Nodes</h4>
+                                <p class="text-xs text-slate-500">Remote servers (AWS, GCP, etc.) managed via standard SSH.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-1 w-full bg-slate-900 rounded-3xl p-8 aspect-square flex items-center justify-center relative overflow-hidden">
+                    <!-- SVG Architecture Diagram Placeholder -->
+                    <div class="text-center">
+                        <div class="relative z-10">
+                            <div class="bg-blue-600 text-white p-4 rounded-xl inline-block mb-4">Control Node</div>
+                            <div class="flex justify-center gap-4 text-slate-400">
+                                <i class="fas fa-arrow-down block text-2xl animate-bounce"></i>
+                            </div>
+                            <div class="flex gap-4 justify-center">
+                                <div class="bg-slate-700 text-slate-300 p-2 rounded text-[10px]">Node 1</div>
+                                <div class="bg-slate-700 text-slate-300 p-2 rounded text-[10px]">Node 2</div>
+                                <div class="bg-slate-700 text-slate-300 p-2 rounded text-[10px]">Node 3</div>
+                            </div>
+                        </div>
+                        <div class="absolute inset-0 opacity-10 flex items-center justify-center">
+                            <i class="fas fa-network-wired text-[300px]"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: INSTALLATION -->
+        <section id="setup" class="mb-20">
+            <h2 class="text-3xl font-black mb-10 text-center">Installation Guide</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Windows -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200">
+                    <h3 class="font-bold mb-4 flex items-center gap-2"><i class="fab fa-windows text-blue-500"></i> Windows</h3>
+                    <p class="text-xs text-slate-500 mb-4">Uses **WSL (Windows Subsystem for Linux)** to run an Ubuntu environment.</p>
+                    <div class="cmd-block text-[10px]"># Inside WSL terminal<br>sudo apt update</div>
+                </div>
+                <!-- Ubuntu -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200">
+                    <h3 class="font-bold mb-4 flex items-center gap-2"><i class="fab fa-ubuntu text-orange-600"></i> Ubuntu</h3>
+                    <p class="text-xs text-slate-500 mb-4">Direct installation via the apt package manager.</p>
+                    <div class="cmd-block text-[10px]">sudo apt update<br>sudo apt install ansible -y</div>
+                </div>
+                <!-- MacOS -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200">
+                    <h3 class="font-bold mb-4 flex items-center gap-2"><i class="fab fa-apple text-slate-800"></i> Mac OS</h3>
+                    <p class="text-xs text-slate-500 mb-4">Installation via the popular Brew package manager.</p>
+                    <div class="cmd-block text-[10px]">brew install ansible</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: PROJECT STRUCTURE -->
+        <section class="mb-20 bg-slate-900 rounded-3xl p-10 text-white relative overflow-hidden">
+            <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl font-black mb-6">Project Anatomy</h2>
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="text-blue-400 text-xl font-black">01</div>
+                            <div>
+                                <h4 class="font-bold">Roles</h4>
+                                <p class="text-sm text-slate-400">Containers for grouping tasks (e.g., "python" or "webserver").</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="text-blue-400 text-xl font-black">02</div>
+                            <div>
+                                <h4 class="font-bold">Playbooks</h4>
+                                <p class="text-sm text-slate-400">The top-level files (.yml) that map specific hosts to roles.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="text-blue-400 text-xl font-black">03</div>
+                            <div>
+                                <h4 class="font-bold">Inventory</h4>
+                                <p class="text-sm text-slate-400">The host file listing IP addresses and connection details.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-2xl font-mono text-xs border border-white/5 shadow-2xl">
+                    <div class="flex items-center gap-2 mb-4 border-b border-white/10 pb-4">
+                        <i class="fas fa-folder-open text-amber-400"></i>
+                        <span>ansible-project/</span>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-slate-500">├── hosts.ini</p>
+                        <p class="text-slate-500">├── site.yml</p>
+                        <p class="text-slate-500">└── roles/</p>
+                        <p class="text-slate-300 ml-4">└── webserver/</p>
+                        <p class="text-slate-400 ml-8">└── tasks/</p>
+                        <p class="text-blue-400 ml-12">└── main.yml</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER / NEXT TOPIC -->
+    <footer class="next-topic-banner py-20 px-6 text-center text-white">
+        <div class="max-w-3xl mx-auto">
+            <p class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-4">Up Next</p>
+            <h2 class="text-3xl font-black mb-8">Ready to deploy your first blog?</h2>
+            <div class="flex justify-center gap-4">
+                <button class="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-full font-bold transition-all">Start Project</button>
+                <button class="bg-white/10 hover:bg-white/20 border border-white/20 px-8 py-3 rounded-full font-bold transition-all">View Code</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE MODAL -->
+    <div id="componentModal" class="fixed inset-0 z-[100] items-center justify-center p-6">
+        <div class="modal-content bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl">
+            <div id="modalHeader" class="p-6 text-white bg-blue-600">
+                <div class="flex justify-between items-center">
+                    <h3 id="modalTitle" class="text-xl font-black">Component Details</h3>
+                    <button onclick="closeModal()" class="hover:bg-black/10 rounded p-2"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            <div class="p-8">
+                <p id="modalBody" class="text-slate-600 leading-relaxed"></p>
+                <div class="mt-8 pt-8 border-t border-slate-100 flex justify-end">
+                    <button onclick="closeModal()" class="px-6 py-2 bg-slate-100 rounded-lg text-slate-700 font-bold hover:bg-slate-200 transition-colors">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showModal(type) {
+            const modal = document.getElementById('componentModal');
+            const title = document.getElementById('modalTitle');
+            const body = document.getElementById('modalBody');
+            const header = document.getElementById('modalHeader');
+
+            const content = {
+                install: {
+                    t: "Software Installation",
+                    b: "Ansible excels at fleet-wide installation. Instead of installing packages one by one, you define your requirements in a task. Ansible checks if the software is present and installs it only if necessary, ensuring 'idempotency'.",
+                    c: "bg-blue-600"
+                },
+                config: {
+                    t: "Configuration Management",
+                    b: "Manage configuration files like Nginx configs or database settings. Ansible can use templates to inject environment-specific variables into your config files before pushing them to servers.",
+                    c: "bg-green-600"
+                },
+                deploy: {
+                    t: "Application Deployment",
+                    b: "Automate your CI/CD pipeline by using Ansible to pull the latest code from Git, set up dependencies, run migrations, and restart services without manual intervention.",
+                    c: "bg-purple-600"
+                }
+            };
+
+            const data = content[type];
+            title.innerText = data.t;
+            body.innerText = data.b;
+            header.className = `p-6 text-white ${data.c}`;
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('componentModal').classList.remove('active');
+        }
+
+        function scrollToId(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Close modal on escape key
+        window.addEventListener('keydown', (e) => {
+            if(e.key === 'Escape') closeModal();
+        });
+    </script>
+</body>
+</html>
