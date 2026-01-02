@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ansible Mastery | Interactive DevOps Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Fira+Code:wght@400;500&display=swap');
+
+        :root {
+            --ansible-red: #EE0000;
+            --dark-navy: #0f172a;
+            --accent-blue: #326CE5;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: var(--dark-navy);
+            scroll-behavior: smooth;
+        }
+
+        .code-font { font-family: 'Fira Code', monospace; }
+
+        .glass-header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #0f172a 0%, #326CE5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .neo-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 2rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .terminal-window {
+            background: #1e293b;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        .ai-shimmer {
+            background: linear-gradient(90deg, #326CE5, #a855f7, #326CE5);
+            background-size: 200% auto;
+            animation: shimmer 3s linear infinite;
+        }
+        @keyframes shimmer {
+            to { background-position: 200% center; }
+        }
+
+        @keyframes bounce-short {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        .animate-bounce-short { animation: bounce-short 0.5s ease-out; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="glass-header sticky top-0 z-[100] px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-[#EE0000] w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-lg">
+                    <span class="font-black text-xl">A</span>
+                </div>
+                <div>
+                    <p class="text-[10px] font-bold text-red-600 uppercase tracking-widest leading-none">Ansible</p>
+                    <p class="font-extrabold text-slate-800 tracking-tight">Mastery Portal</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-8 text-[11px] font-bold uppercase tracking-widest text-slate-500">
+                <a href="#ai-tools" class="text-blue-600 flex items-center gap-1"><i class="fas fa-sparkles"></i> AI Tools</a>
+                <a href="#demo" class="hover:text-blue-600 transition-colors">Hands-on</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="pt-20 pb-32 px-6">
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+            <div>
+                <h1 class="text-6xl font-extrabold mb-8 leading-tight gradient-text">
+                    Smart <br>Automation.
+                </h1>
+                <p class="text-lg text-slate-500 max-w-lg mb-10 leading-relaxed">
+                    Generate production-ready Ansible playbooks using our integrated Gemini AI assistant.
+                </p>
+                <div class="flex gap-4">
+                    <button onclick="document.getElementById('ai-tools').scrollIntoView()" class="px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold shadow-xl hover:scale-105 transition-all">Try AI Generator</button>
+                </div>
+            </div>
+            <div class="terminal-window">
+                <div class="bg-slate-800 px-4 py-3 flex gap-2">
+                    <div class="w-2 h-2 rounded-full bg-red-500"></div>
+                    <div class="w-2 h-2 rounded-full bg-amber-500"></div>
+                    <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                </div>
+                <div class="p-8 code-font text-sm text-slate-300">
+                    <p class="text-blue-400">$ ansible-galaxy init web_cluster</p>
+                    <p class="mt-2 text-emerald-400">- role web_cluster created successfully</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- AI Generator Section -->
+    <main class="max-w-7xl mx-auto px-6 space-y-32 pb-32">
+        <section id="ai-tools" class="scroll-mt-32">
+            <div class="mb-12">
+                <h2 class="text-4xl font-extrabold mb-2 tracking-tight">✨ AI Playbook Generator</h2>
+                <p class="text-slate-500">Describe your infrastructure needs and receive a complete YAML file.</p>
+            </div>
+
+            <div class="grid lg:grid-cols-5 gap-8">
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="neo-card p-8 border-blue-100 bg-blue-50/30">
+                        <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Goal Description</label>
+                        <textarea id="ai-prompt" placeholder="e.g. 'Setup a PostgreSQL database on CentOS 7, create a user 'app_user' and a database 'production_db''" 
+                            class="w-full h-40 p-4 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm mb-4"></textarea>
+                        <button id="generate-btn" onclick="generatePlaybook()" class="w-full py-4 ai-shimmer text-white rounded-xl font-bold shadow-lg flex items-center justify-center gap-2">
+                            <i class="fas fa-magic"></i> Generate Code
+                        </button>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-3">
+                    <div class="terminal-window h-full flex flex-col min-h-[400px]">
+                        <div class="bg-slate-800 px-6 py-4 flex justify-between items-center">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ansible_output.yml</span>
+                            <button onclick="copyGeneratedCode()" class="text-slate-400 hover:text-white text-xs"><i class="fas fa-copy"></i> Copy Code</button>
+                        </div>
+                        <div id="ai-output" class="p-8 code-font text-sm text-slate-300 whitespace-pre overflow-auto flex-grow">
+                            <span class="text-slate-500 italic">Playbook code will be generated here...</span>
+                        </div>
+                        <div id="ai-loading" class="hidden p-8 flex items-center justify-center gap-3">
+                            <div class="w-3 h-3 rounded-full bg-blue-500 animate-bounce"></div>
+                            <div class="w-3 h-3 rounded-full bg-blue-500 animate-bounce [animation-delay:-.3s]"></div>
+                            <div class="w-3 h-3 rounded-full bg-blue-500 animate-bounce [animation-delay:-.5s]"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hands-on Examples -->
+        <section id="demo" class="scroll-mt-32">
+            <h2 class="text-3xl font-bold mb-8">Standard Module Patterns</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="neo-card p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h4 class="font-bold">Apt Package Management</h4>
+                        <button onclick="aiExplain('Explain the ansible.builtin.apt module parameters: name, state, and update_cache.')" class="text-blue-600 text-[10px] font-bold uppercase tracking-widest">✨ Explain Logic</button>
+                    </div>
+                    <pre class="bg-slate-50 p-4 rounded-xl text-xs code-font text-slate-600">
+- name: Install Nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: latest
+    update_cache: yes</pre>
+                </div>
+                <div class="neo-card p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h4 class="font-bold">Service Management</h4>
+                        <button onclick="aiExplain('Explain the ansible.builtin.service module parameters: name, state, and enabled.')" class="text-blue-600 text-[10px] font-bold uppercase tracking-widest">✨ Explain Logic</button>
+                    </div>
+                    <pre class="bg-slate-50 p-4 rounded-xl text-xs code-font text-slate-600">
+- name: Ensure Nginx is running
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: yes</pre>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Toast UI -->
+    <div id="toast" class="fixed bottom-10 right-10 z-[200] transform translate-y-20 opacity-0 transition-all duration-300">
+        <div id="toast-container" class="bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4">
+            <div id="toast-icon"></div>
+            <p id="toast-msg" class="text-sm font-bold"></p>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = ""; // Set by runtime environment
+        const MODEL_NAME = "gemini-2.5-flash-preview-09-2025";
+
+        async function callGemini(prompt, systemInstruction) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                systemInstruction: { parts: [{ text: systemInstruction }] }
+            };
+
+            for (let i = 0; i < 5; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        console.error('Gemini API Error:', errorData);
+                        throw new Error(`API Error: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
+                } catch (error) {
+                    if (i === 4) throw error;
+                    const delay = Math.pow(2, i) * 1000;
+                    await new Promise(r => setTimeout(r, delay));
+                }
+            }
+        }
+
+        async function generatePlaybook() {
+            const promptInput = document.getElementById('ai-prompt');
+            const output = document.getElementById('ai-output');
+            const loading = document.getElementById('ai-loading');
+            const btn = document.getElementById('generate-btn');
+
+            if (!promptInput.value.trim()) {
+                showToast("Please describe your goal.", "warn");
+                return;
+            }
+
+            output.innerHTML = "";
+            loading.classList.remove('hidden');
+            btn.disabled = true;
+
+            const systemMsg = "You are an Ansible expert. Generate ONLY a valid YAML playbook. Use modern ansible.builtin syntax. No markdown backticks, just the code.";
+
+            try {
+                const result = await callGemini(promptInput.value, systemMsg);
+                output.innerText = result.replace(/```yaml/g, '').replace(/```/g, '').trim();
+                showToast("Playbook generated!", "success");
+            } catch (err) {
+                output.innerHTML = `<span class="text-red-400">Error: ${err.message}. Check your connectivity or console for details.</span>`;
+                showToast("Connection failed.", "warn");
+            } finally {
+                loading.classList.add('hidden');
+                btn.disabled = false;
+            }
+        }
+
+        async function aiExplain(context) {
+            showToast("✨ Analyzing with AI...", "info");
+            
+            const systemMsg = "Provide a 2-sentence technical explanation of the Ansible task provided.";
+
+            try {
+                const result = await callGemini(context, systemMsg);
+                
+                const overlay = document.createElement('div');
+                overlay.className = "fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[210] flex items-center justify-center p-6";
+                overlay.innerHTML = `
+                    <div class="bg-white rounded-3xl p-8 max-w-md shadow-2xl animate-bounce-short">
+                        <h3 class="font-extrabold text-xl mb-3">AI Insight</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-6">${result}</p>
+                        <button onclick="this.parentElement.parentElement.remove()" class="w-full py-3 bg-slate-900 text-white rounded-xl font-bold text-xs uppercase tracking-widest">Close</button>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+            } catch (err) {
+                showToast("Explanation failed.", "warn");
+            }
+        }
+
+        function copyGeneratedCode() {
+            const text = document.getElementById('ai-output').innerText;
+            if (!text || text.includes("generated here")) return;
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            showToast("Copied to clipboard!", "success");
+        }
+
+        function showToast(msg, type = "info") {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastMsg.innerText = msg;
+            toastIcon.innerHTML = type === 'success' ? '<i class="fas fa-check text-emerald-400"></i>' : 
+                                 type === 'warn' ? '<i class="fas fa-exclamation text-amber-400"></i>' : 
+                                 '<i class="fas fa-info-circle text-blue-400"></i>';
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
+        }
+    </script>
+</body>
+</html>
