@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ansible Mastery | Interactive DevOps Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Fira+Code:wght@400;500&display=swap');
+
+        :root {
+            --ansible-red: #EE0000;
+            --dark-navy: #0f172a;
+            --accent-blue: #326CE5;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: var(--dark-navy);
+            scroll-behavior: smooth;
+        }
+
+        .code-font { font-family: 'Fira Code', monospace; }
+
+        .glass-header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #0f172a 0%, #326CE5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .neo-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 2rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .neo-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+            border-color: var(--accent-blue);
+        }
+
+        .terminal-window {
+            background: #1e293b;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        .step-indicator {
+            position: relative;
+        }
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            left: 1.25rem;
+            top: 2rem;
+            bottom: 0;
+            width: 2px;
+            background: #e2e8f0;
+            z-index: 0;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .float-anim { animation: float 4s ease-in-out infinite; }
+
+        .ai-shimmer {
+            background: linear-gradient(90deg, #326CE5, #a855f7, #326CE5);
+            background-size: 200% auto;
+            animation: shimmer 3s linear infinite;
+        }
+        @keyframes shimmer {
+            to { background-position: 200% center; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="glass-header sticky top-0 z-[100] px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-[#EE0000] w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-lg shadow-red-500/20">
+                    <span class="font-black text-xl">A</span>
+                </div>
+                <div class="hidden sm:block">
+                    <p class="text-[10px] font-bold text-red-600 uppercase tracking-widest leading-none">Ansible</p>
+                    <p class="font-extrabold text-slate-800 tracking-tight">Mastery Portal</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-8 text-[11px] font-bold uppercase tracking-widest text-slate-500">
+                <a href="#structure" class="hover:text-blue-600 transition-colors">Structure</a>
+                <a href="#modules" class="hover:text-blue-600 transition-colors">Modules</a>
+                <a href="#ai-tools" class="text-blue-600 flex items-center gap-1"><i class="fas fa-sparkles"></i> ✨ AI Tools</a>
+                <a href="#demo" class="hover:text-blue-600 transition-colors">Hands-on</a>
+                <a href="#execution" class="bg-slate-900 text-white px-5 py-2.5 rounded-full hover:bg-blue-600 transition-all">Execute</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative pt-20 pb-32 px-6 overflow-hidden">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full opacity-10 pointer-events-none">
+            <div class="absolute top-20 right-10 w-64 h-64 bg-blue-400 rounded-full blur-[100px]"></div>
+            <div class="absolute bottom-20 left-10 w-80 h-80 bg-red-400 rounded-full blur-[120px]"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+            <div class="relative z-10 text-center lg:text-left">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-slate-200 shadow-sm mb-8">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Infrastructure as Code</span>
+                </div>
+                <h1 class="text-6xl lg:text-7xl font-extrabold mb-8 leading-[1.05] gradient-text">
+                    Automate <br>Everything.
+                </h1>
+                <p class="text-lg text-slate-500 max-w-lg mb-10 mx-auto lg:mx-0 leading-relaxed">
+                    Master the "Agentless" engine. Use our ✨ AI Playground to generate playbooks from natural language.
+                </p>
+                <div class="flex flex-wrap justify-center lg:justify-start gap-4">
+                    <button onclick="document.getElementById('ai-tools').scrollIntoView()" class="px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold shadow-2xl shadow-slate-900/20 hover:scale-105 transition-all">✨ AI Playbook Generator</button>
+                    <button onclick="document.getElementById('demo').scrollIntoView()" class="px-8 py-4 bg-white border border-slate-200 rounded-2xl font-bold hover:bg-slate-50 transition-all">Manual Guide</button>
+                </div>
+            </div>
+
+            <div class="relative float-anim">
+                <div class="terminal-window">
+                    <div class="bg-slate-800 px-4 py-3 flex gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-amber-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-emerald-400"></div>
+                    </div>
+                    <div class="p-8 code-font text-sm leading-relaxed">
+                        <p class="text-slate-500"># Initializing automation engine...</p>
+                        <p class="text-blue-400">$ ansible-playbook -i production deploy.yml</p>
+                        <div class="mt-4 space-y-1">
+                            <p class="text-emerald-400">PLAY [Configure Web Servers] ***********</p>
+                            <p class="text-slate-300">TASK [Gathering Facts] ................ ok</p>
+                            <p class="text-amber-400">TASK [Install Apache] .................. changed</p>
+                            <p class="text-emerald-400">TASK [Start Service] .................. ok</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-6 space-y-32 pb-32">
+
+        <!-- NEW: AI GENERATOR SECTION -->
+        <section id="ai-tools" class="scroll-mt-32">
+            <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div>
+                    <h2 class="text-4xl font-extrabold mb-4 tracking-tight">✨ AI Automation Playground</h2>
+                    <p class="text-slate-500">Use Gemini to generate complex Ansible playbooks or explain snippets instantly.</p>
+                </div>
+                <div class="flex gap-2">
+                    <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-[10px] font-bold uppercase tracking-widest">Powered by Gemini 2.5 Flash</span>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-5 gap-8">
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="neo-card p-8 border-blue-100 bg-blue-50/30">
+                        <h3 class="font-bold text-lg mb-4">Generate Playbook</h3>
+                        <textarea id="ai-prompt" placeholder="Describe your goal (e.g. 'Install Nginx on Ubuntu, copy a config file, and ensure service is restarted')..." 
+                            class="w-full h-32 p-4 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm mb-4"></textarea>
+                        <button id="generate-btn" onclick="generatePlaybook()" class="w-full py-4 ai-shimmer text-white rounded-xl font-bold shadow-lg hover:opacity-90 transition-all flex items-center justify-center gap-2">
+                            <i class="fas fa-magic"></i> ✨ Generate Playbook
+                        </button>
+                    </div>
+
+                    <div class="neo-card p-8 border-slate-100">
+                        <h3 class="font-bold text-lg mb-2">Why use AI?</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            Generating playbooks with LLMs ensures you use the correct <span class="code-font text-blue-600">ansible.builtin</span> namespaces and helps avoid common YAML syntax errors.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-3">
+                    <div class="terminal-window h-full flex flex-col">
+                        <div class="bg-slate-800 px-6 py-4 flex justify-between items-center border-b border-white/5">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">AI Generated Content</span>
+                            <div class="flex gap-2">
+                                <button onclick="copyGeneratedCode()" class="text-slate-400 hover:text-white text-xs"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                        </div>
+                        <div id="ai-output" class="p-8 code-font text-sm text-slate-300 whitespace-pre overflow-auto max-h-[500px] flex-grow">
+                            <span class="text-slate-500 italic">Playbook output will appear here...</span>
+                        </div>
+                        <div id="ai-loading" class="hidden p-8 flex items-center justify-center gap-3">
+                            <div class="w-2 h-2 rounded-full bg-blue-500 animate-bounce"></div>
+                            <div class="w-2 h-2 rounded-full bg-blue-500 animate-bounce [animation-delay:-.3s]"></div>
+                            <div class="w-2 h-2 rounded-full bg-blue-500 animate-bounce [animation-delay:-.5s]"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Playbook Structure -->
+        <section id="structure" class="scroll-mt-32">
+            <div class="mb-16">
+                <h2 class="text-4xl font-extrabold mb-4 tracking-tight">Playbook Architecture</h2>
+                <p class="text-slate-500">A Playbook is a collection or list of "plays" targeting your inventory.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Play Definition -->
+                <div class="neo-card p-10 flex flex-col">
+                    <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mb-8">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <h3 class="text-xl font-extrabold mb-4">The Play</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed mb-6">
+                        Defines activities for specific groups (e.g., "DB Server Play" and "App Server Play").
+                    </p>
+                    <ul class="mt-auto space-y-3">
+                        <li class="flex items-center gap-3 text-xs font-bold"><i class="fas fa-server text-blue-400"></i> Target Hosts</li>
+                        <li class="flex items-center gap-3 text-xs font-bold"><i class="fas fa-user-shield text-blue-400"></i> Remote User</li>
+                    </ul>
+                </div>
+
+                <!-- Privilege Escalation -->
+                <div class="neo-card p-10 flex flex-col border-amber-100 bg-amber-50/20">
+                    <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-2xl mb-8">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-extrabold mb-4">Become Privilege</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed mb-6">
+                        Setting <span class="code-font font-bold text-amber-700">become: true</span> allows the play to execute commands with root/sudo privileges.
+                    </p>
+                    <div class="mt-auto bg-amber-100/50 p-3 rounded-xl text-[10px] font-bold text-amber-800 uppercase tracking-widest">Required for System Tasks</div>
+                </div>
+
+                <!-- Fact Gathering -->
+                <div class="neo-card p-10 flex flex-col">
+                    <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mb-8">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <h3 class="text-xl font-extrabold mb-4">Gathering Facts</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed mb-6">
+                        The first implicit task. It collects system info and verifies connectivity before running your logic.
+                    </p>
+                    <div class="mt-auto bg-slate-100 p-3 rounded-xl text-[10px] font-mono text-slate-600">setup_module.py</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Modules Deep Dive -->
+        <section id="modules" class="scroll-mt-32 bg-slate-900 rounded-[3rem] p-12 lg:p-20 text-white">
+            <div class="grid lg:grid-cols-2 gap-20 items-center">
+                <div>
+                    <h2 class="text-4xl font-extrabold mb-8 leading-tight">Understanding <br><span class="text-blue-400">Modules</span></h2>
+                    <p class="text-slate-400 mb-10 leading-relaxed">
+                        Modules are the workhorses that perform the execution—installing databases, starting services, or managing files.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex gap-6">
+                            <div class="flex-shrink-0 w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center"><i class="fas fa-book-open"></i></div>
+                            <div>
+                                <h4 class="font-bold mb-1">Official Documentation</h4>
+                                <p class="text-sm text-slate-500">The instructor emphasizes using official docs to find syntax rather than memorizing it.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-6">
+                            <div class="flex-shrink-0 w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center"><i class="fas fa-cubes"></i></div>
+                            <div>
+                                <h4 class="font-bold mb-1">ansible.builtin</h4>
+                                <p class="text-sm text-slate-500">Vast library including <strong>apt</strong>, <strong>yum</strong>, <strong>service</strong>, and <strong>copy</strong>.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-6 bg-white/5 rounded-3xl border border-white/10 hover:bg-white/10 transition-colors">
+                        <p class="text-blue-400 code-font text-xs mb-2">ansible.builtin.apt</p>
+                        <p class="text-xs text-slate-400 uppercase tracking-widest font-bold">Package Mgmt</p>
+                    </div>
+                    <div class="p-6 bg-white/5 rounded-3xl border border-white/10 hover:bg-white/10 transition-colors">
+                        <p class="text-emerald-400 code-font text-xs mb-2">ansible.builtin.copy</p>
+                        <p class="text-xs text-slate-400 uppercase tracking-widest font-bold">File Transfer</p>
+                    </div>
+                    <div class="p-6 bg-white/5 rounded-3xl border border-white/10 hover:bg-white/10 transition-colors">
+                        <p class="text-amber-400 code-font text-xs mb-2">ansible.builtin.service</p>
+                        <p class="text-xs text-slate-400 uppercase tracking-widest font-bold">State Control</p>
+                    </div>
+                    <div class="p-6 bg-white/5 rounded-3xl border border-white/10 hover:bg-white/10 transition-colors">
+                        <p class="text-purple-400 code-font text-xs mb-2">ansible.builtin.user</p>
+                        <p class="text-xs text-slate-400 uppercase tracking-widest font-bold">IAM Roles</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Hands-on Demo -->
+        <section id="demo" class="scroll-mt-32">
+            <div class="text-center mb-16">
+                <span class="text-blue-600 font-bold uppercase tracking-[0.3em] text-[10px]">Step-by-Step Walkthrough</span>
+                <h2 class="text-4xl font-extrabold mt-4">Deploying a Web Server</h2>
+            </div>
+
+            <div class="max-w-4xl mx-auto space-y-12">
+                <!-- Step 1 -->
+                <div class="step-indicator flex gap-10">
+                    <div class="relative z-10 w-10 h-10 rounded-full bg-slate-900 text-white flex-shrink-0 flex items-center justify-center font-bold">1</div>
+                    <div class="neo-card flex-1 p-8">
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="font-bold">Install Apache <span class="text-slate-400 text-xs font-mono">apt module</span></h4>
+                            <button onclick="aiExplain('Step 1: Install Apache using apt with state: present')" class="text-[10px] text-blue-600 font-bold uppercase tracking-widest hover:underline">✨ Explain Logic</button>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl code-font text-xs text-slate-600">
+                            - name: Install Apache<br>
+                            &nbsp;&nbsp;apt:<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;name: apache2<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;state: <span class="text-blue-600">present</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="step-indicator flex gap-10">
+                    <div class="relative z-10 w-10 h-10 rounded-full bg-slate-900 text-white flex-shrink-0 flex items-center justify-center font-bold">2</div>
+                    <div class="neo-card flex-1 p-8">
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="font-bold">Deploy HTML <span class="text-slate-400 text-xs font-mono">copy module</span></h4>
+                            <button onclick="aiExplain('Step 2: Deploy HTML index file to /var/www/html/index.html using copy module')" class="text-[10px] text-blue-600 font-bold uppercase tracking-widest hover:underline">✨ Explain Logic</button>
+                        </div>
+                        <p class="text-sm text-slate-500 mb-4">Moves <span class="bg-slate-100 px-1.5 py-0.5 rounded">index.html</span> from Control Node to <span class="bg-slate-100 px-1.5 py-0.5 rounded">/var/www/html</span>.</p>
+                        <div class="bg-slate-50 p-4 rounded-xl code-font text-xs text-slate-600">
+                            - name: Copy index page<br>
+                            &nbsp;&nbsp;copy:<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;src: index.html<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;dest: /var/www/html/index.html
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div id="execution" class="flex gap-10">
+                    <div class="relative z-10 w-10 h-10 rounded-full bg-emerald-500 text-white flex-shrink-0 flex items-center justify-center font-bold shadow-lg shadow-emerald-500/30">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <div class="bg-slate-900 text-white flex-1 p-8 rounded-[2rem] shadow-2xl">
+                        <h4 class="font-bold mb-4">Execution Command</h4>
+                        <p class="text-sm text-slate-400 mb-6 italic text-center">"Trigger the orchestration across your fleet."</p>
+                        <div class="bg-black/50 p-6 rounded-2xl code-font text-sm text-emerald-400 border border-white/5">
+                            ansible-playbook -i inventory.ini webserver.yml
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-12 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="flex items-center gap-3">
+                <div class="bg-slate-100 p-2 rounded-lg text-slate-400">
+                    <i class="fas fa-terminal"></i>
+                </div>
+                <span class="font-bold tracking-tight">Ansible Learning Hub</span>
+            </div>
+            <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">&copy; 2026 DevOps Operations • Agentless Architecture</p>
+            <div class="flex gap-6">
+                <a href="#" class="text-slate-400 hover:text-blue-600 transition-colors"><i class="fab fa-github"></i></a>
+                <a href="#" class="text-slate-400 hover:text-blue-600 transition-colors"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-10 right-10 z-[200] transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4">
+            <div id="toast-icon" class="text-blue-400"><i class="fas fa-info-circle"></i></div>
+            <p id="toast-msg" class="text-sm font-bold"></p>
+        </div>
+    </div>
+
+    <script>
+        // API CONFIG
+        const apiKey = ""; // Environment provided
+        const MODEL_NAME = "gemini-2.5-flash-preview-09-2025";
+
+        async function callGemini(prompt, systemInstruction) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                systemInstruction: { parts: [{ text: systemInstruction }] }
+            };
+
+            for (let i = 0; i < 5; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error('API Error');
+                    const data = await response.json();
+                    return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
+                } catch (error) {
+                    const delay = Math.pow(2, i) * 1000;
+                    await new Promise(r => setTimeout(r, delay));
+                }
+            }
+            return "Failed to connect to AI service. Please try again later.";
+        }
+
+        async function generatePlaybook() {
+            const promptInput = document.getElementById('ai-prompt');
+            const output = document.getElementById('ai-output');
+            const loading = document.getElementById('ai-loading');
+            const btn = document.getElementById('generate-btn');
+
+            if (!promptInput.value.trim()) {
+                showToast("Please enter a description first!", "warn");
+                return;
+            }
+
+            // UI State
+            output.innerHTML = "";
+            loading.classList.remove('hidden');
+            btn.disabled = true;
+
+            const systemMsg = `You are an Ansible automation expert. 
+            Generate valid, well-commented YAML playbooks based on user requests. 
+            Always use modern 'ansible.builtin' namespaces. 
+            Include 'become: true' if the tasks likely require root. 
+            Output ONLY the YAML code, no conversational filler.`;
+
+            const result = await callGemini(promptInput.value, systemMsg);
+            
+            loading.classList.add('hidden');
+            btn.disabled = false;
+            
+            // Cleanup markdown formatting if model adds ```yaml
+            const cleanResult = result.replace(/```yaml/g, '').replace(/```/g, '').trim();
+            output.innerText = cleanResult;
+        }
+
+        async function aiExplain(context) {
+            showToast("✨ Gemini is analyzing code logic...", "info");
+            
+            const systemMsg = `You are a DevOps mentor. Explain the provided Ansible task briefly (3 sentences max). 
+            Focus on what it does, why it's used, and the benefit of its parameters. 
+            Be encouraging and clear.`;
+
+            const result = await callGemini(`Explain this task: ${context}`, systemMsg);
+            
+            // Simple overlay for explanation
+            const overlay = document.createElement('div');
+            overlay.className = "fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[210] flex items-center justify-center p-6";
+            overlay.innerHTML = `
+                <div class="bg-white rounded-3xl p-8 max-w-md shadow-2xl transform animate-bounce-short">
+                    <div class="text-blue-600 mb-4 text-2xl"><i class="fas fa-sparkles"></i></div>
+                    <h3 class="font-extrabold text-xl mb-3 leading-tight">Concept Analysis</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-6">${result}</p>
+                    <button onclick="this.parentElement.parentElement.remove()" class="w-full py-3 bg-slate-900 text-white rounded-xl font-bold text-xs uppercase tracking-widest">Close Insight</button>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+
+        function copyGeneratedCode() {
+            const text = document.getElementById('ai-output').innerText;
+            if (text.includes("output will appear here")) return;
+            
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            showToast("Playbook copied to clipboard!", "success");
+        }
+
+        function showToast(msg, type = "info") {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastMsg.innerText = msg;
+            
+            if (type === "warn") toastIcon.innerHTML = '<i class="fas fa-exclamation-triangle text-amber-400"></i>';
+            else if (type === "success") toastIcon.innerHTML = '<i class="fas fa-check-circle text-emerald-400"></i>';
+            else toastIcon.innerHTML = '<i class="fas fa-info-circle text-blue-400"></i>';
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Smooth reveal animation on scroll
+        const observerOptions = { threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-10');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.neo-card, section').forEach(el => {
+            el.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-10');
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
