@@ -203,53 +203,46 @@
                 <span class="text-blue-600 font-bold uppercase tracking-wider text-sm">Component 01</span>
                 <h2 class="text-3xl font-bold mt-2 mb-4">Virtual Network (VNet)</h2>
                 <div class="space-y-4 text-slate-600">
-                    <p>VNets logically isolate a customer's network within Azure's physical network, ensuring data security and preventing unauthorized access between different customers' resources.</p>
+                    <p>A Virtual Network (VNet) in Azure is a logically isolated network that securely connects Azure resources and extends on-premises networks.</p>
                     <ul class="list-disc pl-5 space-y-2">
-                        <li><strong>Logical Isolation:</strong> Your own private space in the cloud.</li>
-                        <li><strong>Flexibility:</strong> Create any number of VNets based on organization requirements.</li>
-                        <li><strong>Size:</strong> Defined using <span class="bg-blue-100 px-1 rounded text-blue-700 font-mono">CIDR</span> notation.</li>
+                        <li><strong>Isolation:</strong> Provides isolation at the network level for segmenting resources and controlling traffic.</li>
+                        <li><strong>Subnetting:</strong> Divide a VNet into subnets for resource organization and traffic control.</li>
+                        <li><strong>Address Space:</strong> VNet address space is defined using <strong>CIDR notation</strong>, determining the IP range.</li>
                     </ul>
                 </div>
             </div>
             <div class="grid grid-cols-1 gap-4">
                 <div class="interactive-block bg-white p-6 rounded-xl border border-slate-200 border-l-4 border-l-blue-500 shadow-sm" onclick="showModal('cidr')">
-                    <h4 class="font-bold flex items-center"><i class="fas fa-calculator mr-2 text-blue-500"></i> CIDR Basics</h4>
-                    <p class="text-sm text-slate-500 mt-1">Learn how IP ranges are defined and allocated in Azure.</p>
+                    <h4 class="font-bold flex items-center"><i class="fas fa-calculator mr-2 text-blue-500"></i> CIDR & Subnets</h4>
+                    <p class="text-sm text-slate-500 mt-1">Understanding CIDR notation for IP ranges and network prefixes.</p>
                 </div>
                 <div class="interactive-block bg-white p-6 rounded-xl border border-slate-200 border-l-4 border-l-slate-800 shadow-sm" onclick="showModal('vnet-creation')">
-                    <h4 class="font-bold flex items-center"><i class="fas fa-plus-circle mr-2 text-slate-800"></i> Creation Workflow</h4>
-                    <p class="text-sm text-slate-500 mt-1">Steps and requirements for setting up a new VNet environment.</p>
+                    <h4 class="font-bold flex items-center"><i class="fas fa-plus-circle mr-2 text-slate-800"></i> Extension & Security</h4>
+                    <p class="text-sm text-slate-500 mt-1">How VNets extend on-premises networks and maintain security.</p>
                 </div>
             </div>
         </section>
 
-        <!-- Subnets Section -->
+        <!-- Subnets & CIDR Section -->
         <section id="subnets" class="bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-slate-100">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold">Subnets & Segmentation</h2>
-                <p class="text-slate-600 mt-2">Logically splitting your VNet into manageable, secure parts.</p>
+                <h2 class="text-3xl font-bold">Segmentation & Addressing</h2>
+                <p class="text-slate-600 mt-2">Logical subdivisions and technical routing prefixes.</p>
             </div>
-            <div class="grid md:grid-cols-3 gap-6">
+            <div class="grid md:grid-cols-2 gap-8">
                 <div class="p-6 bg-slate-50 rounded-2xl">
-                    <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm mb-4">
-                        <i class="fas fa-layer-group text-blue-500"></i>
+                    <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm mb-4 text-blue-500">
+                        <i class="fas fa-sitemap"></i>
                     </div>
-                    <h4 class="font-bold mb-2 text-slate-800">Logical Splitting</h4>
-                    <p class="text-sm text-slate-600 leading-relaxed">Divide applications into layers like Web, Business Logic, and Database tiers for better management.</p>
+                    <h4 class="font-bold mb-2 text-slate-800">Subnets</h4>
+                    <p class="text-sm text-slate-600 leading-relaxed">Subdivisions of a Virtual Network, allowing for better organization and traffic management across your cloud environment.</p>
                 </div>
                 <div class="p-6 bg-slate-50 rounded-2xl">
-                    <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm mb-4">
-                        <i class="fas fa-shield-alt text-green-500"></i>
+                    <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm mb-4 text-orange-500">
+                        <i class="fas fa-terminal"></i>
                     </div>
-                    <h4 class="font-bold mb-2 text-slate-800">Security Advantages</h4>
-                    <p class="text-sm text-slate-600 leading-relaxed">Apply specific rules to each subnet, restricting direct internet access to sensitive databases.</p>
-                </div>
-                <div class="p-6 bg-slate-50 rounded-2xl">
-                    <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm mb-4">
-                        <i class="fas fa-expand-arrows-alt text-orange-500"></i>
-                    </div>
-                    <h4 class="font-bold mb-2 text-slate-800">Size Definition</h4>
-                    <p class="text-sm text-slate-600 leading-relaxed">Just like VNets, subnet sizes are defined using CIDR to ensure enough IP addresses for resources.</p>
+                    <h4 class="font-bold mb-2 text-slate-800">CIDR Notation</h4>
+                    <p class="text-sm text-slate-600 leading-relaxed">Classless Inter-Domain Routing represents IP addresses and their routing prefix, specifying the exact range of IP addresses for a network.</p>
                 </div>
             </div>
         </section>
@@ -257,60 +250,71 @@
         <!-- NSG & ASG Section -->
         <section id="security" class="space-y-12">
             <div class="flex flex-col md:flex-row gap-8">
+                <!-- NSG Card -->
                 <div class="flex-1 bg-[#1e293b] text-white p-8 rounded-2xl shadow-xl">
                     <h3 class="text-2xl font-bold mb-4 flex items-center">
                         <span class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3 text-sm">NSG</span>
                         Network Security Groups
                     </h3>
-                    <p class="text-slate-300 mb-6">Controlling inbound and outbound traffic at the subnet or VM instance level.</p>
+                    <p class="text-slate-300 mb-6 text-sm">Fundamental for Azure's network security, allowing filtering of inbound and outbound traffic.</p>
                     <ul class="space-y-3">
-                        <li class="flex items-start text-sm"><i class="fas fa-check-circle text-blue-400 mt-1 mr-2"></i> <span>Customizable rules based on Port, Protocol, and IP.</span></li>
-                        <li class="flex items-start text-sm"><i class="fas fa-check-circle text-blue-400 mt-1 mr-2"></i> <span>Default configurations allow for fast onboarding.</span></li>
-                        <li class="flex items-start text-sm"><i class="fas fa-check-circle text-blue-400 mt-1 mr-2"></i> <span>Can restrict SSH access to DBs while allowing Web traffic.</span></li>
+                        <li class="flex items-start text-xs"><i class="fas fa-shield-alt text-blue-400 mt-1 mr-2"></i> <span><strong>Rules:</strong> Define allowed/denied traffic based on Source, Destination, Port, and Protocol.</span></li>
+                        <li class="flex items-start text-xs"><i class="fas fa-lock text-blue-400 mt-1 mr-2"></i> <span><strong>Default Rules:</strong> Built-in rules for traffic control within VNets and between subnets.</span></li>
+                        <li class="flex items-start text-xs"><i class="fas fa-link text-blue-400 mt-1 mr-2"></i> <span><strong>Association:</strong> Can be associated with subnets or individual network interfaces (NICs).</span></li>
                     </ul>
                 </div>
+                <!-- ASG Card -->
                 <div class="flex-1 border-2 border-dashed border-slate-200 p-8 rounded-2xl flex flex-col justify-center bg-white shadow-sm">
-                    <h3 class="text-2xl font-bold mb-4 flex items-center">
+                    <h3 class="text-2xl font-bold mb-4 flex items-center text-slate-800">
                         <span class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center mr-3 text-sm text-white">ASG</span>
                         Application Security Groups
                     </h3>
-                    <p class="text-slate-600 mb-4 text-sm leading-relaxed">Enhance NSGs by grouping instances logically (e.g., "Business Logic Servers") and apply security rules to these groups, even within the same subnet.</p>
-                    <div class="p-4 bg-orange-50 border border-orange-100 rounded-lg text-xs text-orange-800 italic">
-                        "Provides more granular control over network access without managing complex IP lists."
-                    </div>
+                    <p class="text-slate-600 mb-6 text-sm leading-relaxed">Group virtual machines based on application requirements, simplifying security management.</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-start text-xs"><i class="fas fa-check text-orange-500 mt-1 mr-2"></i> <span><strong>Simplification:</strong> Rules based on application roles instead of individual IP addresses.</span></li>
+                        <li class="flex items-start text-xs"><i class="fas fa-sync text-orange-500 mt-1 mr-2"></i> <span><strong>Dynamic Membership:</strong> Supports membership based on tags or other attributes.</span></li>
+                        <li class="flex items-start text-xs"><i class="fas fa-network-wired text-orange-500 mt-1 mr-2"></i> <span><strong>Rule Association:</strong> Security rules associated with ASGs are intuitive and scalable.</span></li>
+                    </ul>
                 </div>
             </div>
         </section>
 
-        <!-- Route Tables Section -->
+        <!-- Routes & Route Tables Section -->
         <section id="routing" class="grid md:grid-cols-2 gap-12 items-center">
             <div class="order-2 md:order-1 relative">
                 <div class="aspect-square bg-blue-50 rounded-full flex items-center justify-center">
                     <div class="w-3/4 h-3/4 bg-white shadow-xl rounded-2xl p-8 flex flex-col justify-between">
-                        <div class="space-y-2">
-                            <div class="h-4 w-2/3 bg-slate-100 rounded"></div>
-                            <div class="h-4 w-full bg-slate-50 rounded"></div>
-                        </div>
                         <div class="space-y-4">
                             <div class="flex items-center space-x-4">
                                 <div class="w-10 h-10 bg-green-100 rounded flex items-center justify-center text-green-600"><i class="fas fa-route"></i></div>
-                                <div class="text-xs font-mono font-bold text-slate-500">UDR: 10.0.1.0/24 <br> Gateway: Firewall</div>
+                                <div>
+                                    <div class="text-[10px] font-bold text-slate-400 uppercase">A "Route"</div>
+                                    <div class="text-xs font-mono font-bold text-slate-700">Dest: 10.0.1.0/24 <br> Next Hop: NVA</div>
+                                </div>
                             </div>
-                            <div class="flex items-center space-x-4">
-                                <div class="w-10 h-10 bg-blue-100 rounded flex items-center justify-center text-blue-600"><i class="fas fa-arrow-right"></i></div>
-                                <div class="text-xs font-mono font-bold text-slate-500">Internet: 0.0.0.0/0 <br> Status: Redirected</div>
+                            <div class="flex items-center space-x-4 border-t pt-4 border-slate-100">
+                                <div class="w-10 h-10 bg-blue-100 rounded flex items-center justify-center text-blue-600"><i class="fas fa-table"></i></div>
+                                <div>
+                                    <div class="text-[10px] font-bold text-slate-400 uppercase">A "Route Table"</div>
+                                    <div class="text-xs font-mono font-bold text-slate-700">Association: Subnet-01 <br> Rules: 5 Active Routes</div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="order-1 md:order-2">
-                <span class="text-blue-600 font-bold uppercase tracking-wider text-sm">Traffic Control</span>
-                <h2 class="text-3xl font-bold mt-2 mb-4">Route Tables & UDR</h2>
-                <p class="text-slate-600 mb-6 leading-relaxed">User-Defined Routes (UDR) define how traffic should flow within a subnet, essentially providing directions for network communication to reach specific resources.</p>
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                    <h4 class="font-bold mb-2 text-slate-800">Key Function:</h4>
-                    <p class="text-sm text-slate-500 italic">"They define exactly how traffic should flow, ensuring packets don't get lost and follow the desired security path (like passing through a Firewall)."</p>
+                <span class="text-blue-600 font-bold uppercase tracking-wider text-sm">Traffic Flow Control</span>
+                <h2 class="text-3xl font-bold mt-2 mb-4">Routes and Route Tables</h2>
+                <div class="space-y-6">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                        <h4 class="font-bold text-slate-800">Routes</h4>
+                        <p class="text-sm text-slate-600">Routes dictate exactly how network traffic is directed, specifying the final destination and the intermediate "next hop" for the packet.</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                        <h4 class="font-bold text-slate-800">Route Tables</h4>
+                        <p class="text-sm text-slate-600">Route Tables are collections of routes associated with subnets, enabling the creation of custom routing rules to override default Azure system routes.</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -318,12 +322,13 @@
 
     <!-- Footer Banner -->
     <footer class="next-topic-banner py-16 px-6 text-center text-white">
-        <h2 class="text-2xl font-bold mb-4">Deep Dive into CIDR?</h2>
-        <p class="text-slate-400 mb-8 max-w-lg mx-auto">Learn the math behind subnet masks and IP allocation to design enterprise-grade networks.</p>
+        <h2 class="text-2xl font-bold mb-4">Mastered Networking Basics?</h2>
+        <p class="text-slate-400 mb-8 max-w-lg mx-auto">Design intuitive and scalable network security management using these core principles.</p>
         <div class="flex flex-wrap justify-center gap-4">
-            <a href="#" class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-xl font-bold transition shadow-lg">Watch CIDR Video</a>
-            <a href="https://github.com" class="bg-slate-700 hover:bg-slate-600 px-6 py-3 rounded-xl font-bold transition"><i class="fab fa-github mr-2"></i> Course Repo</a>
+            <a href="#" class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-xl font-bold transition shadow-lg">Watch CIDR Deep Dive</a>
+            <a href="https://github.com" class="bg-slate-700 hover:bg-slate-600 px-6 py-3 rounded-xl font-bold transition"><i class="fab fa-github mr-2"></i> Detailed Notes</a>
         </div>
+        <p class="mt-12 text-slate-500 text-[10px] font-bold uppercase tracking-widest">Isolation • Subnetting • Security Rules • Route Tables</p>
     </footer>
 
     <!-- Modal System -->
@@ -349,20 +354,20 @@
     <script>
         const modalData = {
             'vm-web': {
-                title: 'Web Application Layer',
-                body: 'The Web Subnet hosts your internet-facing resources. NSG rules here typically allow HTTP (80) and HTTPS (443) traffic. In this diagram, the <strong>allowed path</strong> shows traffic successfully clearing the first security gate to reach the app.'
+                title: 'Web Subnet Logic',
+                body: 'Subnets are subdivisions of a Virtual Network. They allow for better organization. In this tier, NSG rules typically allow public traffic while keeping internal database access restricted.'
             },
             'vm-db': {
-                title: 'Database Layer',
-                body: 'A protected subnet. Security rules strictly block direct internet access (shown by the <strong>RED DENY</strong> indicator). Traffic is only allowed if it originates from the Web Application tier and passes the second NSG checkpoint.'
+                title: 'Database Tier Security',
+                body: 'NSGs provide fundamental security here. Rules are defined based on Source IP, Port, and Protocol to ensure that only the Web Tier can talk to the Database Instance.'
             },
             'cidr': {
-                title: 'CIDR & Network Security',
-                body: 'CIDR defines the IP range. NSGs use these ranges to filter traffic. For example, you can write a rule that says "Only allow traffic from Subnet A (10.0.1.0/24) to Subnet B (10.0.2.0/24)".'
+                title: 'CIDR Notation Details',
+                body: 'CIDR (Classless Inter-Domain Routing) represents IP addresses and their routing prefix. It specifies the exact range of IP addresses for your network. For example, a /24 subnet provides 256 addresses.'
             },
             'vnet-creation': {
-                title: 'Granular Control with ASGs',
-                body: 'Application Security Groups (ASGs) let you group servers by role. Instead of saying "Allow traffic from 10.0.1.5", you say "Allow traffic from Web-Servers". This keeps your network clean and readable as you scale.'
+                title: 'Logical Isolation',
+                body: 'VNets provide isolation at the network level. This enables segmenting resources and controlling traffic, ensuring that your Azure environment remains secure even within a shared physical network.'
             }
         };
 
